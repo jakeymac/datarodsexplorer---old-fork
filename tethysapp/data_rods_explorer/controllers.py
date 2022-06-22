@@ -6,8 +6,13 @@ from .model_objects import get_wms_vars, get_datarods_png, get_datarods_tsb, \
 from .utilities import create_map, create_select_model, create_plot_ctrls, create_map_date_ctrls, \
     create_years_list, get_data_rod_plot, get_data_rod_plot2, get_data_rod_years
 from json import dumps
+from tethys_sdk.routing import controller
 
 
+@controller(
+    name='home',
+    url='data-rods-explorer',
+)
 def home(request):
     """
     Controller for the app 'home' page.
@@ -78,6 +83,10 @@ def home(request):
     return render(request, 'data_rods_explorer/app_base_dre.html', context)
 
 
+@controller(
+    name='map',
+    url='data-rods-explorer/request-map-layer',
+)
 def request_map_layer(request):
     context = {
         'success': False
@@ -107,7 +116,10 @@ def request_map_layer(request):
             context['success'] = True
     return JsonResponse(context)
 
-
+@controller(
+    name='plot',
+    url='data-rods-explorer/plot',
+)
 def plot(request):
     """
     Controller for the plot page.
@@ -122,6 +134,7 @@ def plot(request):
             varunit = get_wms_vars()[post['model']][post['variable']][2]
             point_lon_lat = post['pointLonLat']
             datarod_ts, datarods_urls_dict = get_data_rod_plot(post, point_lon_lat)
+            print('got this far')
             timeseries_plot = TimeSeries(
                 height='250px',
                 width='100%',
@@ -153,6 +166,10 @@ def plot(request):
     return render(request, 'data_rods_explorer/plot.html', context)
 
 
+@controller(
+    name='plot2',
+    url='data-rods-explorer/plot2',
+)
 def plot2(request):
     """
     Controller for the plot2 page.
@@ -176,6 +193,10 @@ def plot2(request):
         return render(request, 'data_rods_explorer/plot.html', context)
 
 
+controller(
+    name='years',
+    url='data-rods-explorer/years',
+)
 def years(request):
     """
     Controller for the 'years' page.

@@ -12,7 +12,7 @@ function onClickLink(link, navItem) {
     } else {
         $('.nav-link').removeClass('open');
         $(link).addClass('open');
-        $('.nav-item').addClass('hidden');
+        //$('.nav-item').addClass('hidden');
         $('#nav-' + navItem).removeClass('hidden');
 
         loadNavOptionsAndParams(navItem);

@@ -253,26 +253,27 @@ def parse_fences_from_file():
             if not (line == '' or 'Model name' in line):  # end condition
                 line = line.strip()
                 linevals = line.split('|')
-                start_date = (datetime.strptime(linevals[1].split(' ')[0], '%m/%d/%Y') + timedelta(days=1)) \
-                    .strftime('%m/%d/%Y')
-                # begin_time = linevals[1].split(' ')[1]
-                end_date = (datetime.strptime(linevals[2].split(' ')[0], '%m/%d/%Y') - timedelta(days=1)) \
-                    .strftime('%m/%d/%Y')
-                # end_time = linevals[2].split(' ')[1]
-                nbound = linevals[3].split(', ')[0]
-                ebound = linevals[3].split(', ')[1]
-                sbound = linevals[3].split(', ')[2]
-                wbound = linevals[3].split(', ')[3]
-                model_fences[linevals[0]] = {
-                    'start_date': start_date,
-                    'end_date': end_date,
-                    'extents': {
-                        'maxY': nbound,
-                        'maxX': ebound,
-                        'minY': sbound,
-                        'minX': wbound
+                if len(linevals) > 1:
+                    start_date = (datetime.strptime(linevals[1].split(' ')[0], '%m/%d/%Y') + timedelta(days=1)) \
+                        .strftime('%m/%d/%Y')
+                    # begin_time = linevals[1].split(' ')[1]
+                    end_date = (datetime.strptime(linevals[2].split(' ')[0], '%m/%d/%Y') - timedelta(days=1)) \
+                        .strftime('%m/%d/%Y')
+                    # end_time = linevals[2].split(' ')[1]
+                    nbound = linevals[3].split(', ')[0]
+                    ebound = linevals[3].split(', ')[1]
+                    sbound = linevals[3].split(', ')[2]
+                    wbound = linevals[3].split(', ')[3]
+                    model_fences[linevals[0]] = {
+                        'start_date': start_date,
+                        'end_date': end_date,
+                        'extents': {
+                            'maxY': nbound,
+                            'maxX': ebound,
+                            'minY': sbound,
+                            'minX': wbound
+                        }
                     }
-                }
 
     return model_fences
 

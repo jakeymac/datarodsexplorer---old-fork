@@ -323,8 +323,8 @@ function addLegendItem(layer) {
     var title = layer.tethys_legend_title;
     var html =  '<li class="legend-item">' +
         '<div class="legend-buttons">' +
-        '<a class="btn btn-default btn-legend-action zoom-control">' + title + '</a>' +
-        '<a class="btn btn-default legend-dropdown-toggle">' +
+        '<a class="btn btn-outline-secondary btn-legend-action zoom-control">' + title + '</a>' +
+        '<a class="btn btn-outline-secondary legend-dropdown-toggle">' +
         '<span class="caret"></span>' +
         '<span class="sr-only">Toggle Dropdown</span>' +
         '</a>' +
@@ -532,10 +532,16 @@ function displayFlashMessage(id, type, message, allowClose) {
 
     switch (type) {
         case 'success':
-            sign = 'ok';
+            sign = 'check-circle-fill';
+            break;
+        case 'info':
+            sign = 'info-circle-fill';
+            break;
+        case 'warning':
+            sign = 'exclamation-triangle';
             break;
         case 'danger':
-            sign = 'remove';
+            sign = 'x-circle-fill';
             break;
         default:
             sign = type;
@@ -555,7 +561,7 @@ function displayFlashMessage(id, type, message, allowClose) {
     $('.flash-messages').append(
         '<div id="' + id + '" class="alert alert-' + type + ' alert-dismissible" role="alert">' +
         closeHtml +
-        '<b><span class="glyphicon glyphicon-' + sign + '-sign" aria-hidden="true"></span> ' +
+        '<i class="bi bi-' + sign + '" </i> ' +
         message +
         '</b></div>'
     );
