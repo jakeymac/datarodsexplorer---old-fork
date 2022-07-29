@@ -134,7 +134,6 @@ def plot(request):
             varunit = get_wms_vars()[post['model']][post['variable']][2]
             point_lon_lat = post['pointLonLat']
             datarod_ts, datarods_urls_dict = get_data_rod_plot(post, point_lon_lat)
-            print('got this far')
             timeseries_plot = TimeSeries(
                 height='250px',
                 width='100%',
