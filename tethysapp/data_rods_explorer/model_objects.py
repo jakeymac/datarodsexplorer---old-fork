@@ -253,7 +253,7 @@ def parse_fences_from_file():
             if not (line == '' or 'Model name' in line):  # end condition
                 line = line.strip()
                 linevals = line.split('|')
-                if len(linevals) > 1:
+                if len(linevals) > 3:
                     start_date = (datetime.strptime(linevals[1].split(' ')[0], '%m/%d/%Y') + timedelta(days=1)) \
                         .strftime('%m/%d/%Y')
                     # begin_time = linevals[1].split(' ')[1]
