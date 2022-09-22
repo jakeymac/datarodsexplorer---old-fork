@@ -1,5 +1,7 @@
 # coding=utf-8
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 from datetime import datetime
 from dateutil import parser as dateparser
 from .model_objects import get_wms_vars, get_datarods_tsb, \

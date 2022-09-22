@@ -1,10 +1,10 @@
 from urllib.request import urlopen
 from os import path
 from sys import path as syspath
-syspath.append('/usr/local/lib/python2.7/site-packages')  # This is so bs4 and requests will be found #?
-from requests import get
-from bs4 import BeautifulSoup   #?
 from datetime import datetime, timedelta
+syspath.append('/usr/local/lib/python2.7/site-packages')  # This is so bs4 and requests will be found #?
+from requests import get  # noqa E402
+from bs4 import BeautifulSoup   # ?  # noqa E402
 
 
 def extract_model_data_from_config_file():
@@ -169,6 +169,7 @@ def convert_datetime(date_time):
     minute = date_time[14:16]
     second = date_time[17:19]
     return "%s/%s/%s %s:%s:%s" % (month, day, year, hour, minute, second)
+
 
 models_list = extract_model_data_from_config_file()
 write_fences_file(models_list)

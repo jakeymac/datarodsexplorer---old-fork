@@ -1,11 +1,11 @@
 from setuptools import setup, find_namespace_packages
 from tethys_apps.app_installation import find_resource_files
 
-### Apps Definition ###
+# ### Apps Definition ###
 app_package = 'data_rods_explorer'
 release_package = 'tethysapp-' + app_package
 
-### Python Dependencies ###
+# ### Python Dependencies ###
 dependencies = []
 
 # -- Get Resource File -- #

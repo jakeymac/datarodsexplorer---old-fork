@@ -110,6 +110,7 @@ def request_map_layer(request):
             context['success'] = True
     return JsonResponse(context)
 
+
 @controller(name='plot', url='data-rods-explorer/plot')
 def plot(request):
     """
@@ -180,10 +181,7 @@ def plot2(request):
         return render(request, 'data_rods_explorer/plot.html', context)
 
 
-controller(
-    name='years',
-    url='data-rods-explorer/years',
-)
+@controller(name='years', url='data-rods-explorer/years')
 def years(request):
     """
     Controller for the 'years' page.

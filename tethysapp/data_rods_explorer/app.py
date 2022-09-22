@@ -1,4 +1,4 @@
-from tethys_apps.base import TethysAppBase, url_map_maker
+from tethys_apps.base import TethysAppBase
 from tethys_sdk.app_settings import SpatialDatasetServiceSetting
 
 
