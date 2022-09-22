@@ -9,10 +9,7 @@ from json import dumps
 from tethys_sdk.routing import controller
 
 
-@controller(
-    name='home',
-    url='data-rods-explorer',
-)
+@controller(name='home', url='data-rods-explorer')
 def home(request):
     """
     Controller for the app 'home' page.
@@ -83,10 +80,7 @@ def home(request):
     return render(request, 'data_rods_explorer/app_base_dre.html', context)
 
 
-@controller(
-    name='map',
-    url='data-rods-explorer/request-map-layer',
-)
+@controller(name='map', url='data-rods-explorer/request-map-layer')
 def request_map_layer(request):
     context = {
         'success': False
@@ -116,10 +110,7 @@ def request_map_layer(request):
             context['success'] = True
     return JsonResponse(context)
 
-@controller(
-    name='plot',
-    url='data-rods-explorer/plot',
-)
+@controller(name='plot', url='data-rods-explorer/plot')
 def plot(request):
     """
     Controller for the plot page.
@@ -165,10 +156,7 @@ def plot(request):
     return render(request, 'data_rods_explorer/plot.html', context)
 
 
-@controller(
-    name='plot2',
-    url='data-rods-explorer/plot2',
-)
+@controller(name='plot2', url='data-rods-explorer/plot2')
 def plot2(request):
     """
     Controller for the plot2 page.

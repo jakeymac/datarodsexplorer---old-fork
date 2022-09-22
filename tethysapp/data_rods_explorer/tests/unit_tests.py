@@ -95,10 +95,7 @@ class TestManager:
         cls.complete = True
 
 
-@controller(
-    name='run_tests',
-    url='data-rods-explorer/run-tests',
-)
+@controller(name='run_tests', url='data-rods-explorer/run-tests')
 def test_nasa_endpoints(request):
     if request.is_ajax() and request.method == 'GET':
         if TestManager.complete:
