@@ -1,11 +1,12 @@
 from os import path
 from datetime import datetime, timedelta
 from requests import get
-from tethys_sdk.services import get_spatial_dataset_engine
 import os
 from threading import Thread
 from tempfile import NamedTemporaryFile
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 import zipfile
 from math import copysign
 from tethysapp.data_rods_explorer.app import DataRodsExplorer as app
@@ -75,7 +76,7 @@ class TiffLayerManager:
                kwargs={}).start()
 
     def request_tiff_layer_async(self, post_params):
-        try: #uncomment Try/excpet
+        try:  # uncomment Try/excpet
             self.requested = True
             plot_time = post_params.get('plotTime', None)
             self.model = post_params.get('model', None)
@@ -100,20 +101,18 @@ class TiffLayerManager:
             self.zip_path = file_name + '.zip'
             self.download_raster_from_nasa()
         except Exception as e:
-             print(str(e))
-             self.message = str(e)
-
+            print(str(e))
+            self.message = str(e)
 
     def download_raster_from_nasa(self):
-        try: # uncomment Try/except
+        try:  # uncomment Try/except
             minx, miny, maxx, maxy = self.latlonbox
             # Create tiff file
 
+            url = get_datarods_png().format(minx, miny, maxx, maxy, self.time_st,
+                                            get_wms_vars()[self.model][self.variable][0])
 
-            url = get_datarods_png().format(minx, miny, maxx, maxy, self.time_st, get_wms_vars()[self.model][self.variable][0])
-
-            url_image = urllib.request.urlopen(url) # error
-
+            url_image = urllib.request.urlopen(url)  # error
 
             self.tiff_file.write(url_image.read())
             self.tiff_file.close()
@@ -125,18 +124,17 @@ class TiffLayerManager:
             self.create_zip_file()
             self.upload_layer_to_geoserver()
         except Exception as e:
-            print ('download raster from nasa error')
+            print('download raster from nasa error')
             print(str(e))
             self.message = str(e)
-
 
     def upload_layer_to_geoserver(self):
         # Geoserver parameters
         geo_eng = app.get_spatial_dataset_service('default', as_engine=True)
         # Create raster in geoserver
-        print ('upload layer to geoserver')
+        print('upload layer to geoserver')
 
-        response = geo_eng.create_coverage_resource(store_id=self.store_id,   ## error
+        response = geo_eng.create_coverage_resource(store_id=self.store_id,   # error
                                                     coverage_file=self.zip_path,
                                                     coverage_type='worldimage',
                                                     overwrite=True,
@@ -157,7 +155,6 @@ class TiffLayerManager:
             self.geoserver_url = geo_eng.endpoint.replace('rest', 'wms')
             self.loaded = True
 
-
     def create_tfw_file(self, h=256, w=512):
         minx, miny, maxx, maxy = self.latlonbox
         hscx = copysign((float(maxx) - float(minx)) / w, 1)
@@ -167,8 +164,12 @@ class TiffLayerManager:
         tfw_file.write('0.0\n')
         tfw_file.write('0.0\n')
         tfw_file.write('{0}\n'.format(-hscy))
-        tfw_file.write('{0}\n'.format(float(minx) - hscx / 2, float(minx)))
-        tfw_file.write('{0}\n'.format(float(maxy) - hscy / 2, float(maxy)))
+        # Next two lines are backups of what was originally here for future reference/warning
+        # The format string was given two values, but only one place to put it.
+        # tfw_file.write('{0}\n'.format(float(minx) - hscx / 2, float(minx)))
+        # tfw_file.write('{0}\n'.format(float(maxy) - hscy / 2, float(maxy)))
+        tfw_file.write('{0}\n'.format(float(minx) - hscx / 2))
+        tfw_file.write('{0}\n'.format(float(maxy) - hscy / 2))
         tfw_file.write('')
         tfw_file.close()
 
@@ -253,26 +254,27 @@ def parse_fences_from_file():
             if not (line == '' or 'Model name' in line):  # end condition
                 line = line.strip()
                 linevals = line.split('|')
-                start_date = (datetime.strptime(linevals[1].split(' ')[0], '%m/%d/%Y') + timedelta(days=1)) \
-                    .strftime('%m/%d/%Y')
-                # begin_time = linevals[1].split(' ')[1]
-                end_date = (datetime.strptime(linevals[2].split(' ')[0], '%m/%d/%Y') - timedelta(days=1)) \
-                    .strftime('%m/%d/%Y')
-                # end_time = linevals[2].split(' ')[1]
-                nbound = linevals[3].split(', ')[0]
-                ebound = linevals[3].split(', ')[1]
-                sbound = linevals[3].split(', ')[2]
-                wbound = linevals[3].split(', ')[3]
-                model_fences[linevals[0]] = {
-                    'start_date': start_date,
-                    'end_date': end_date,
-                    'extents': {
-                        'maxY': nbound,
-                        'maxX': ebound,
-                        'minY': sbound,
-                        'minX': wbound
+                if len(linevals) > 3:
+                    start_date = (datetime.strptime(linevals[1].split(' ')[0], '%m/%d/%Y') + timedelta(days=1)) \
+                        .strftime('%m/%d/%Y')
+                    # begin_time = linevals[1].split(' ')[1]
+                    end_date = (datetime.strptime(linevals[2].split(' ')[0], '%m/%d/%Y') - timedelta(days=1)) \
+                        .strftime('%m/%d/%Y')
+                    # end_time = linevals[2].split(' ')[1]
+                    nbound = linevals[3].split(', ')[0]
+                    ebound = linevals[3].split(', ')[1]
+                    sbound = linevals[3].split(', ')[2]
+                    wbound = linevals[3].split(', ')[3]
+                    model_fences[linevals[0]] = {
+                        'start_date': start_date,
+                        'end_date': end_date,
+                        'extents': {
+                            'maxY': nbound,
+                            'maxX': ebound,
+                            'minY': sbound,
+                            'minX': wbound
+                        }
                     }
-                }
 
     return model_fences
 

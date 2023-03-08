@@ -1,5 +1,7 @@
 # coding=utf-8
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 from datetime import datetime
 from dateutil import parser as dateparser
 from .model_objects import get_wms_vars, get_datarods_tsb, \
@@ -57,7 +59,7 @@ def create_map():
         controls=['ZoomSlider'],
         layers=[],
         view=view_options,
-        basemap='OpenStreetMap',
+        basemap=['OpenStreetMap'],
         draw=draw_options,
         legend=True,
         disable_basemap=False,
@@ -80,7 +82,7 @@ def create_map_date_ctrls(model):
                              end_date=get_model_fences()[model]['end_date'],
                              start_view=0,
                              attributes='onchange=oc_map_dt();',
-                             classes=''
+                             classes='mb-3'
                              )
 
     select_hour = SelectInput(display_text='',
