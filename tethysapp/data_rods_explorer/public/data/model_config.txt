@@ -99,9 +99,6 @@ AMSRED|opt_depth_c|LPRM_AMSRE_D_SOILM3_002_opt_depth_c|Optical depth C-band desc
 AMSRED|opt_depth_x|LPRM_AMSRE_D_SOILM3_002_opt_depth_x|Optical depth X-band descending|unitless|AMSRE-D:OptDepthXbandDesc
 AMSRED|Ts|LPRM_AMSRE_D_SOILM3_002_Ts|2mm skin temperature AMSRE descending|K|AMSRE-D:2mmSkinTempDesc
 
-LPRM-AMSRE-D-Palmer~AMSREDRZSM~LPRM_AMSRE_D_RZSM3~001~https://hydro1.gesdisc.eosdis.nasa.gov/daac-bin/access/timeseries.cgi?variable=LPRM:LPRM_AMSRE_D_RZSM3.001:{0}&startDate={2}&endDate={3}&location=GEOM:POINT({1})&type=asc2
-AMSREDRZSM|soilMoisture|LPRM_AMSRE_D_RZSM3_001_soilMoisture|Root Zone Soil Moisture-Palmer|%|AMSRE-D-Palmer:RootZoneSoilMoisture%
-
 LPRM-AMSRE-A (Retrieval)~AMSREA~LPRM_AMSRE_A_SOILM3~002~https://hydro1.gesdisc.eosdis.nasa.gov/daac-bin/access/timeseries.cgi?variable=LPRM:LPRM_AMSRE_A_SOILM3.002:{0}&startDate={2}&endDate={3}&location=GEOM:POINT({1})&type=asc2
 AMSREA|soil_moisture_c|LPRM_AMSRE_A_SOILM3_002_soil_moisture_c|Soil moisture C-band ascending|%|AMSRE-A:SoilMoistCbandAsc%
 AMSREA|soil_moisture_x|LPRM_AMSRE_A_SOILM3_002_soil_moisture_x|Soil moisture X-band ascending|%|AMSRE-A:SoilMoistXbandAsc%
