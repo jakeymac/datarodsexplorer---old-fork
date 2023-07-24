@@ -11,21 +11,6 @@ NLDASF|TMP2m|NLDAS_FORA0125_H_002_tmp2m|2-m above ground temperature|K|NLDASF:2m
 NLDASF|UGRD10m|NLDAS_FORA0125_H_002_ugrd10m|10-m above ground zonal wind|m/s|NLDASF:10mAbvGrndZonalWind
 NLDASF|VGRD10m|NLDAS_FORA0125_H_002_vgrd10m|10-m above ground meridional wind|m/s|NLDASF:10mAbvGrndMeridWind
 
-NLDAS-Noah (LSM)~NLDAS~NLDAS_NOAH0125_H~002~https://hydro1.gesdisc.eosdis.nasa.gov/daac-bin/access/timeseries.cgi?variable=NLDAS:NLDAS_NOAH0125_H.002:{0}&type=asc2&location=GEOM:POINT({1})&startDate={2}&endDate={3}
-NLDAS|EVPsfc|NLDAS_NOAH0125_H_002_evpsfc|Evapotranspiration|kg/m^2|NLDAS:Evapotrans
-NLDAS|GFLUXsfc|NLDAS_NOAH0125_H_002_gfluxsfc|Ground heat flux|w/m^2|NLDAS:GrndHeatFlux
-NLDAS|LHTFLsfc|NLDAS_NOAH0125_H_002_lhtflsfc|Latent heat flux|w/m^2|NLDAS:LatentHeatFlux
-NLDAS|SHTFLsfc|NLDAS_NOAH0125_H_002_shtflsfc|Sensible heat flux|w/m^2|NLDAS:SensHeatFlux
-NLDAS|SSRUNsfc|NLDAS_NOAH0125_H_002_ssrunsfc|Surface runoff|kg/m^2|NLDAS:SurfRunoff
-NLDAS|BGRUNsfc|NLDAS_NOAH0125_H_002_bgrunsfc|Subsurface runoff|kg/m^2|NLDAS:SubsurfRunoff
-NLDAS|SOILM0-10cm|NLDAS_NOAH0125_H_002_soilm0_10cm|0-10cm soil moisture|kg/m^2|NLDAS:0-10cmSoilMoisture
-NLDAS|SOILM0-100cm|NLDAS_NOAH0125_H_002_soilm0_100cm|0-100cm soil moisture|kg/m^2|NLDAS:0-100cmSoilMoisture
-NLDAS|SOILM0-200cm|NLDAS_NOAH0125_H_002_soilm0_200cm|0-200cm soil moisture|kg/m^2|NLDAS:0-200cmSoilMoisture
-NLDAS|SOILM10-40cm|NLDAS_NOAH0125_H_002_soilm10_40cm|10-40cm soil moisture|kg/m^2|NLDAS:10-40cmSoilMoisture
-NLDAS|SOILM40-100cm|NLDAS_NOAH0125_H_002_soilm40_100cm|40-100cm soil moisture|kg/m^2|NLDAS:40-100cmSoilMoisture
-NLDAS|SOILM100-200cm|NLDAS_NOAH0125_H_002_soilm100_200cm|100-200cm soil moisture|kg/m^2|NLDAS:100-200cmSoilMoisture
-NLDAS|TSOIL0-10cm|NLDAS_NOAH0125_H_002_tsoil0_10cm|0-10cm soil temperature|K|NLDAS:0-10cmSoilTemp
-
 NLDAS 2.0-Forcing (LSM)~NLDAS2F~NLDAS_FORA0125_H~002~https://hydro1.gesdisc.eosdis.nasa.gov/daac-bin/access/timeseries.cgi?variable=NLDAS2:NLDAS_FORA0125_H_v2.0:{0}&type=asc2&location=GEOM:POINT({1})&startDate={2}&endDate={3}
 NLDAS2F|Rainf|NLDAS_FORA0125_H_v2.0_Rainf|Total precipitation|kg/m^2|NLDAS2F:TotalPrecip
 NLDAS2F|LWdown|NLDAS_FORA0125_H_v2.0_LWdown|LW down radiation flux|w/m^2|NLDAS2F:LWFluxDown
