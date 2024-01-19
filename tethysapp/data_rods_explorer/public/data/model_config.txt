@@ -120,16 +120,6 @@ TMINT|Ts|LPRM_TMI_NT_SOILM3_001_ts|2mm skin temperature-day|m^3/m^3|TMI-NT:2mmSk
 TRMM (Retrieval)~TRMM~TRMM_3B42~7~https://hydro1.gesdisc.eosdis.nasa.gov/daac-bin/access/timeseries.cgi?variable=TRMM:TRMM_3B42.7:{0}&type=asc2&location=GEOM:POINT({1})&startDate={2}&endDate={3}
 TRMM|precipitation|TRMM_3B42_7_precipitation|Precipitation|mm/hr|TRMM:Precip
 
-MERRA-Land~MERRA~MST1NXMLD~5.2.0~https://hydro1.gesdisc.eosdis.nasa.gov/daac-bin/access/timeseries.cgi?variable=MERRA:MST1NXMLD.520:{0}&startDate={2}&endDate={3}&location=GEOM:POINT({1})&type=asc2
-MERRA|PRECSNO|MST1NXMLD_5_2_0_PRECSNO|Surface snowfall|kg/m^2/s|MERRA:SurfaceSnowfall
-MERRA|SFMC|MST1NXMLD_5_2_0_SFMC|Top layer soil moisture|m^3/m^3|MERRA:TopLayerSoilMoisture
-MERRA|LHLAND|MST1NXMLD_5_2_0_LHLAND|Latent heat flux from land|W/m^2|MERRA:LatentHeatFluxLand
-MERRA|PRECTOT|MST1NXMLD_5_2_0_PRECTOT|Total surface precip|kg/m^2/s|MERRA:SurfacePrecip
-MERRA|SHLAND|MST1NXMLD_5_2_0_SHLAND|Sensible heat flux from land|W/m^2|MERRA:SensibleHeatFluxLand
-MERRA|BASEFLOW|MST1NXMLD_5_2_0_PRECSNO|Baseflow|kg/m^2/s|MERRA:Baseflow
-MERRA|RUNOFF|MST1NXMLD_5_2_0_RUNOFF|Overland runoff|kg/m^2/s|MERRA:OverlandRunoff
-MERRA|TSOIL1|MST1NXMLD_5_2_0_TSOIL1|Layer 1 soil temp|K|MERRA:SoilTempLayer1
-
 MERRA2-Diagnostic~MERRA2FD~M2T1NXFLX~5.12.4~https://hydro1.gesdisc.eosdis.nasa.gov/daac-bin/access/timeseries.cgi?variable=MERRA:M2T1NXFLX.5124:{0}&startDate={2}&endDate={3}&location=GEOM:POINT({1})&type=asc2
 MERRA2FD|VLML|M2T1NXFLX_5_12_4_VLML|Surface northward wind t-avg|m/s|MERRA2FD:SurfNorthWind
 MERRA2FD|ULML|M2T1NXFLX_5_12_4_ULML|Surface eastward wind t-avg|m/s|MERRA2FD:SurfEastWind
