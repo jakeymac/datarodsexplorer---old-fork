@@ -32,7 +32,8 @@ def home(request):
                                 multiple=False,
                                 original=True,
                                 options=get_model_options(),
-                                attributes="onchange=oc_model2();"
+                                attributes="onchange=oc_model2();",
+                                classes="w-100 mb-3"
                                 )
 
     years_list = create_years_list(1979)
@@ -52,7 +53,7 @@ def home(request):
                           submit=False,
                           disabled=False,
                           attributes='onclick=createPlot(this.name);',
-                          classes='btn-plot')
+                          classes='btn-plot mb-3')
 
     # Context variables
     context = {

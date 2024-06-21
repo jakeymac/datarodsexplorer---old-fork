@@ -136,7 +136,7 @@
                                     <li class="nav-item nav-divider"></li>
                                     <li class="nav-item title" style="padding-top:0px;">Time series</li>
                                     <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="onClickLink(this, 'plot');">Plot one variable</a></li>
-                                    <div id="nav-plot" class="nav-item hidden" style="padding-left:30px;padding-bottom:15px;">
+                                    <div id="nav-plot" class="nav-item d-none" style="padding-left:30px;padding-bottom:15px;">
                                         <label style="padding-top:15px;">Start date:</label>
                                         {% gizmo date_picker start_date1 %}
                                         <label>End date:</label>
@@ -144,7 +144,7 @@
                                         {% gizmo button plot_button1 %}
                                     </div>
                                     <li class="nav-item"><a class="nav-link" href="javascript:void(0)" onclick="onClickLink(this, 'plot2');">Compare two variables</a></li>
-                                    <div id="nav-plot2" class="nav-item hidden" style="padding-left:30px;padding-bottom:15px;">
+                                    <div id="nav-plot2" class="nav-item d-none" style="padding-left:30px;padding-bottom:15px;">
                                         <label style="padding-top:15px;">Select Second Model</label>
                                         {% gizmo select_input select_model2 %}
                                         <label for="variable2">Select Second Variable</label>
@@ -156,7 +156,7 @@
                                         {% gizmo button plot_button2 %}
                                     </div>
                                     <li class="nav-item"><a class="nav-link" style="padding-bottom:15px;" href="javascript:void(0)" onclick="onClickLink(this, 'years');">Year-on-year changes</a></li>
-                                    <div id="nav-years" class="nav-item hidden" style="padding-left:30px;padding-bottom:15px;">
+                                    <div id="nav-years" class="nav-item d-none" style="padding-left:30px;padding-bottom:15px;">
                                         <label style="padding-top:15px;">Select years:</label>
                                         {% gizmo select_input select_years %}
                                         <fieldset>
@@ -174,12 +174,12 @@
                 {# App content starts here #}
                 <div id="inner-app-content">
                     {% block app_content %}
-                        <div id="map-loading" class="hidden">
+                        <div id="map-loading" class="d-none">
                             <img src="/static/data_rods_explorer/images/main-loading-anim.gif" />
                         </div>
                         {% gizmo map_view map_view_options %}
                         <div style="position: relative;">
-                            <div id="plot-loading" class="hidden">
+                            <div id="plot-loading" class="d-none">
                                 <img src="/static/data_rods_explorer/images/main-loading-anim.gif" />
                             </div>
                             <br>

@@ -26,7 +26,8 @@ def create_select_model(modelname):
                                initial=[selected_model if selected_model else None],
                                original=True,
                                options=get_model_options(),
-                               attributes="onchange=oc_model();"
+                               attributes="onchange=oc_model();",
+                               classes="w-100"
                                )
     return select_model
 
@@ -97,7 +98,7 @@ def create_map_date_ctrls(model):
                                        ('20:00', '20'), ('21:00', '21'), ('22:00', '22'), ('23:00', '23')],
                               initial=['00:00'],
                               attributes='onchange=oc_map_dt();',
-                              classes=''
+                              classes='w-100 h-100 mb-3'
                               )
 
     return [select_date, select_hour]
@@ -204,8 +205,7 @@ def get_data_from_nasa_server(link, overlap_years=False):
             date = '2000' + row_ls[0][4:] if overlap_years else row_ls[0]
             val = row_ls[1]
             date_val_pair = [dateparser.parse(date), float(val)]
-        except Exception as e:
-            print(str(e))
+        except Exception:
             continue
         data.append(date_val_pair)
 

@@ -1,7 +1,7 @@
 function onClickLink(link, navItem) {
     if ($(link).hasClass('open')) {
         $(link).removeClass('open');
-        $('#nav-' + navItem).addClass('hidden');
+        $('#nav-' + navItem).addClass('d-none');
 
         if (navItem == 'plot2') {
             removeFlashMessage('bound-adjusted');

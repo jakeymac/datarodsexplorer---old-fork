@@ -256,7 +256,7 @@ function createPlot(plotType) {
     } else if (pointIsOutOfBounds(pointLonLat, data['model'], data['model2'])) {
         displayFlashMessage(pointOutBoundsFlashMessageID, 'warning', pointOutBoundsFlashMessageText);
     } else {
-        $('#plot-loading').removeClass('hidden');
+        $('#plot-loading').removeClass('d-none');
         displayNasaPlotRequestOutput(plotType, data);
         $.ajax({
             url: '/apps/data-rods-explorer/' + plotType + '/',
@@ -270,13 +270,13 @@ function createPlot(plotType) {
             },
             success: function (responseHTML) {
                 if (responseHTML.indexOf('Error999') !== -1) {
-                    $('#plot-loading').addClass('hidden');
+                    $('#plot-loading').addClass('d-none');
                     displayFlashMessage(error999FlashMessageID, 'warning', $(responseHTML).text());
                 } else {
                     $('#plot-container').html(responseHTML);
                     var hcPlotType = $('.highcharts-plot').attr('data-type');
                     initHighChartsPlot($('.highcharts-plot'), hcPlotType);
-                    $('#plot-loading').addClass('hidden');
+                    $('#plot-loading').addClass('d-none');
 
                     /*$('.option-uploadToHS').on('click', function () {
                         prepareAndOpenHSUploadModal(this);
@@ -299,7 +299,7 @@ function createPlot(plotType) {
                     });
                 }
             }, error: function () {
-                $('#plot-loading').addClass('hidden');
+                $('#plot-loading').addClass('hi');
                 displayFlashMessage(unexpectedErrorFlashMessageID, 'danger', unexpectedErrorFlashMessageText);
             }
         });
@@ -312,11 +312,11 @@ function showMapLoading() {
             'height': $('#map_view').height(),
             'width': $('#map_view').width()
         })
-        .removeClass('hidden');
+        .removeClass('d-none');
 }
 
 function hideMapLoading() {
-    $('#map-loading').addClass('hidden');
+    $('#map-loading').addClass('d-none');
 }
 
 function addLegendItem(layer) {
@@ -553,7 +553,7 @@ function displayFlashMessage(id, type, message, allowClose) {
 
     if (allowClose) {
         closeHtml = '<button type="button" class="close" data-dismiss="alert">' +
-            '<span aria-hidden="true">&times;</span>' +
+            '<span aria-d-none="true">&times;</span>' +
             '<span class="sr-only">Close</span>' +
             '</button>';
     }
@@ -716,7 +716,7 @@ function updateTemporalFences(modelNum) {
 
     }
 
-    if (!$('#nav-plot2').hasClass('hidden')) {
+    if (!$('#nav-plot2').hasClass('d-none')) {
         $endDate = $('#endDate2');
         $startDate = $('#startDate2');
         var earliestDateForModel2 = MODEL_FENCES[model2].start_date;

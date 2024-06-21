@@ -8,6 +8,7 @@ import urllib.request
 import urllib.error
 import urllib.parse
 import zipfile
+from zipfile import ZipFile, is_zipfile
 from math import copysign
 from tethysapp.data_rods_explorer.app import DataRodsExplorer as app
 
@@ -105,14 +106,18 @@ class TiffLayerManager:
             self.message = str(e)
 
     def download_raster_from_nasa(self):
+       
+
         try:  # uncomment Try/except
             minx, miny, maxx, maxy = self.latlonbox
             # Create tiff file
 
             url = get_datarods_png().format(minx, miny, maxx, maxy, self.time_st,
                                             get_wms_vars()[self.model][self.variable][0])
-
+            print(url)
             url_image = urllib.request.urlopen(url)  # error
+
+            
 
             self.tiff_file.write(url_image.read())
             self.tiff_file.close()
@@ -130,16 +135,16 @@ class TiffLayerManager:
 
     def upload_layer_to_geoserver(self):
         # Geoserver parameters
+        
         geo_eng = app.get_spatial_dataset_service('default', as_engine=True)
         # Create raster in geoserver
-        print('upload layer to geoserver')
 
-        response = geo_eng.create_coverage_resource(store_id=self.store_id,   # error
+        response = geo_eng.create_coverage_layer(layer_id=self.store_id,   # error
                                                     coverage_file=self.zip_path,
-                                                    coverage_type='worldimage',
-                                                    overwrite=True,
+                                                    coverage_type='WorldImage',
                                                     debug=False,
                                                     )
+        
         if not response['success']:
             result = geo_eng.create_workspace(workspace_id=get_workspace(),
                                               uri='tethys_app-%s' % get_workspace(),
@@ -148,13 +153,13 @@ class TiffLayerManager:
             if result['success']:
                 self.upload_layer_to_geoserver()
         else:
-
-            response = geo_eng.update_resource(resource_id=self.store_id, store=self.store_id, debug=False, EPSG=4326,
+            workspace, store_name = self.store_id.split(':')
+            response = geo_eng.update_resource(resource_id=self.store_id, store=store_name, debug=False, EPSG=4326,
                                                enabled=True)
 
             self.geoserver_url = geo_eng.endpoint.replace('rest', 'wms')
             self.loaded = True
-
+        
     def create_tfw_file(self, h=256, w=512):
         minx, miny, maxx, maxy = self.latlonbox
         hscx = copysign((float(maxx) - float(minx)) / w, 1)
@@ -280,9 +285,12 @@ def parse_fences_from_file():
 
 
 def parse_model_database_from_file():
+    
+
     # Attempt to parse model_config.txt from GitHub repo master branch
     db_file_url = ('https://raw.githubusercontent.com/gespinoza/datarodsexplorer/master/tethysapp/'
                    'data_rods_explorer/public/data/model_config.txt')
+    db_file_url = ('https://raw.githubusercontent.com/CUAHSI-APPS/datarodsexplorer/master/tethysapp/data_rods_explorer/public/data/model_config.txt')
     f = get(db_file_url)
     if f.status_code == 200:
         lines = f.iter_lines()
@@ -333,5 +341,5 @@ def parse_model_database_from_file():
                 "value": linevals[1],
                 "layerName": linevals[5]
             })
-
+    # print(wms_vars)
     return model_options, var_dict, wms_vars, datarods_tsb

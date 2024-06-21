@@ -11,6 +11,7 @@ def extract_model_data_from_config_file():
     # Attempt to parse model_config.txt from GitHub repo master branch
     db_file_url = ('https://raw.githubusercontent.com/gespinoza/datarodsexplorer/master/tethysapp/'
                    'data_rods_explorer/model_config.txt')
+    db_file_url = ('https://raw.githubusercontent.com/CUAHSI-APPS/datarodsexplorer/master/tethysapp/data_rods_explorer/public/data/model_config.txt')
     f = get(db_file_url)
     if f.status_code == 200:
         if f.encoding is None:
