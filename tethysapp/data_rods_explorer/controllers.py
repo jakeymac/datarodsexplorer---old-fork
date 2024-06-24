@@ -86,7 +86,7 @@ def request_map_layer(request):
     context = {
         'success': False
     }
-    if request.is_ajax and request.method == 'POST':
+    if request.headers.get("x-requested-with") == "XMLHttpRequest" and request.method == 'POST':
         post_params = request.POST
         instance_id = post_params['instance_id']
         tif_layer_manager = TiffLayerManager.get_instance(instance_id)
