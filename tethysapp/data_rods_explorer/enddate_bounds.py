@@ -31,6 +31,7 @@ def extract_model_data_from_config_file():
     model_list = []
 
     for line in lines:
+        line = line.decode()
         if line == '\n' or line == '':
             new_model_switch = True
             continue
