@@ -1,6 +1,5 @@
 #map-loading {
     position: absolute;
-    z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -89,3 +88,22 @@
     justify-content: space-around;
     align-items: center;
 }
+
+#app-content-wrapper.show-nav .flash-messages .alert {
+    margin-right: 300px;
+}
+
+.flash-messages {
+    z-index: 1100;
+    top: 50px;
+}
+
+.flash-messages .alert {
+    width: auto;
+}
+
+.ol-viewport {
+    position:relative;
+    top: 50px;
+}
+

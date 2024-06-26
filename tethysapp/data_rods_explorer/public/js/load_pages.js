@@ -1,7 +1,7 @@
 function onClickLink(link, navItem) {
     if ($(link).hasClass('open')) {
         $(link).removeClass('open');
-        $('#nav-' + navItem).addClass('hidden');
+        $('#nav-' + navItem).addClass('d-none');
 
         if (navItem == 'plot2') {
             removeFlashMessage('bound-adjusted');
@@ -12,8 +12,8 @@ function onClickLink(link, navItem) {
     } else {
         $('.nav-link').removeClass('open');
         $(link).addClass('open');
-        $('.nav-item').addClass('hidden');
-        $('#nav-' + navItem).removeClass('hidden');
+        $('.nav-item').addClass('d-none');
+        $('#nav-' + navItem).removeClass('d-none');
 
         loadNavOptionsAndParams(navItem);
 

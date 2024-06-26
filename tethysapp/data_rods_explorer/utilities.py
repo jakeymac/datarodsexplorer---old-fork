@@ -57,7 +57,7 @@ def create_map():
         controls=['ZoomSlider'],
         layers=[],
         view=view_options,
-        basemap='OpenStreetMap',
+        basemap=['OpenStreetMap'],
         draw=draw_options,
         legend=True,
         disable_basemap=False,
