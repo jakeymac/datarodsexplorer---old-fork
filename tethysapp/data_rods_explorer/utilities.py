@@ -24,7 +24,8 @@ def create_select_model(modelname):
                                initial=[selected_model if selected_model else None],
                                original=True,
                                options=get_model_options(),
-                               attributes="onchange=oc_model();"
+                               attributes="onchange=oc_model();",
+                               classes="w-100 mb-3 form-control"
                                )
     return select_model
 
@@ -57,7 +58,7 @@ def create_map():
         controls=['ZoomSlider'],
         layers=[],
         view=view_options,
-        basemap='OpenStreetMap',
+        basemap=['OpenStreetMap'],
         draw=draw_options,
         legend=True,
         disable_basemap=False,
@@ -95,7 +96,7 @@ def create_map_date_ctrls(model):
                                        ('20:00', '20'), ('21:00', '21'), ('22:00', '22'), ('23:00', '23')],
                               initial=['00:00'],
                               attributes='onchange=oc_map_dt();',
-                              classes=''
+                              classes='form-control'
                               )
 
     return [select_date, select_hour]

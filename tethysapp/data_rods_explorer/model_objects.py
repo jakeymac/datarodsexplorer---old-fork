@@ -130,12 +130,11 @@ class TiffLayerManager:
         # Geoserver parameters
         geo_eng = app.get_spatial_dataset_service('default', as_engine=True)
         # Create raster in geoserver
-        response = geo_eng.create_coverage_resource(store_id=self.store_id,
-                                                    coverage_file=self.zip_path,
-                                                    coverage_type='worldimage',
-                                                    overwrite=True,
-                                                    debug=False,
-                                                    )
+        response = geo_eng.create_coverage_layer(layer_id=self.store_id,   # error
+                                                coverage_file=self.zip_path,
+                                                coverage_type='WorldImage',
+                                                debug=False,
+                                                )
         if not response['success']:
             result = geo_eng.create_workspace(workspace_id=get_workspace(),
                                               uri='tethys_app-%s' % get_workspace(),
@@ -144,9 +143,10 @@ class TiffLayerManager:
             if result['success']:
                 self.upload_layer_to_geoserver()
         else:
-            response = geo_eng.update_resource(resource_id=self.store_id, store=self.store_id, debug=False, EPSG=4326,
+            workspace, store_name = self.store_id.split(':')
+            response = geo_eng.update_resource(resource_id=self.store_id, store=store_name, debug=False, EPSG=4326,
                                                enabled=True)
-            self.geoserver_url = geo_eng.public_endpoint.replace('rest', 'wms')
+            self.geoserver_url = geo_eng.endpoint.replace('rest', 'wms')
             self.loaded = True
 
     def create_tfw_file(self, h=256, w=512):
@@ -158,8 +158,12 @@ class TiffLayerManager:
         tfw_file.write('0.0\n')
         tfw_file.write('0.0\n')
         tfw_file.write('{0}\n'.format(-hscy))
-        tfw_file.write('{0}\n'.format(float(minx) - hscx / 2, float(minx)))
-        tfw_file.write('{0}\n'.format(float(maxy) - hscy / 2, float(maxy)))
+        # Next two lines are backups of what was originally here for future reference/warning
+        # The format string was given two values, but only one place to put it.
+        # tfw_file.write('{0}\n'.format(float(minx) - hscx / 2, float(minx)))
+        # tfw_file.write('{0}\n'.format(float(maxy) - hscy / 2, float(maxy)))
+        tfw_file.write('{0}\n'.format(float(minx) - hscx / 2))
+        tfw_file.write('{0}\n'.format(float(maxy) - hscy / 2))
         tfw_file.write('')
         tfw_file.close()
 
@@ -244,26 +248,27 @@ def parse_fences_from_file():
             if not (line == '' or 'Model name' in line):  # end condition
                 line = line.strip()
                 linevals = line.split('|')
-                start_date = (datetime.strptime(linevals[1].split(' ')[0], '%m/%d/%Y') + timedelta(days=1)) \
-                    .strftime('%m/%d/%Y')
-                # begin_time = linevals[1].split(' ')[1]
-                end_date = (datetime.strptime(linevals[2].split(' ')[0], '%m/%d/%Y') - timedelta(days=1)) \
-                    .strftime('%m/%d/%Y')
-                # end_time = linevals[2].split(' ')[1]
-                nbound = linevals[3].split(', ')[0]
-                ebound = linevals[3].split(', ')[1]
-                sbound = linevals[3].split(', ')[2]
-                wbound = linevals[3].split(', ')[3]
-                model_fences[linevals[0]] = {
-                    'start_date': start_date,
-                    'end_date': end_date,
-                    'extents': {
-                        'maxY': nbound,
-                        'maxX': ebound,
-                        'minY': sbound,
-                        'minX': wbound
+                if len(linevals) > 3:
+                    start_date = (datetime.strptime(linevals[1].split(' ')[0], '%m/%d/%Y') + timedelta(days=1)) \
+                        .strftime('%m/%d/%Y')
+                    # begin_time = linevals[1].split(' ')[1]
+                    end_date = (datetime.strptime(linevals[2].split(' ')[0], '%m/%d/%Y') - timedelta(days=1)) \
+                        .strftime('%m/%d/%Y')
+                    # end_time = linevals[2].split(' ')[1]
+                    nbound = linevals[3].split(', ')[0]
+                    ebound = linevals[3].split(', ')[1]
+                    sbound = linevals[3].split(', ')[2]
+                    wbound = linevals[3].split(', ')[3]
+                    model_fences[linevals[0]] = {
+                        'start_date': start_date,
+                        'end_date': end_date,
+                        'extents': {
+                            'maxY': nbound,
+                            'maxX': ebound,
+                            'minY': sbound,
+                            'minX': wbound
+                        }
                     }
-                }
 
     return model_fences
 
