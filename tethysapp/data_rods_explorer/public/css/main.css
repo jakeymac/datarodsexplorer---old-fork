@@ -12,7 +12,6 @@
 }
 
 #plot-loading {
-    /* position: absolute; */
     right: 0;
     left: 0;
     z-index: 1200;
@@ -30,7 +29,6 @@
     align-items: center;
 }
 
-
 #app-content-wrapper.show-nav .flash-messages .alert {
     margin-right: 300px;
 }
@@ -40,8 +38,6 @@
     top: 50px;
 }
 
-
-
 .flash-messages .alert {
     width: auto;
 }
@@ -50,7 +46,7 @@
 
 .ol-viewport {
     position:relative;
-    top: 50px;
+    margin-top: 50px;
 }
 
 
@@ -110,6 +106,7 @@
     flex-flow: row wrap;
     justify-content: space-around;
     align-items: center;
+    overflow: auto;
 }
 
 .form-control {
@@ -118,4 +115,13 @@
 
 .btn-plot {
     margin-top:10px;
+}
+
+.dropdown-menu {
+    z-index:1300;
+}
+
+.dropdown {
+    margin-top: 15px;
+    margin-bottom: 15px;
 }

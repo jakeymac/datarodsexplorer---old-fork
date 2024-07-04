@@ -234,7 +234,6 @@ function createPlot(plotType) {
     removeFlashMessage(pointOutBoundsFlashMessageID);
     removeFlashMessage(error999FlashMessageID);
 
-
     load_map_post_parameters();
     var data = {};
     var formParams = $('#parametersForm').serializeArray();
@@ -257,6 +256,7 @@ function createPlot(plotType) {
         displayFlashMessage(pointOutBoundsFlashMessageID, 'warning', pointOutBoundsFlashMessageText);
     } else {
         $('#plot-loading').removeClass('d-none');
+        $("#plot-container").empty();
         displayNasaPlotRequestOutput(plotType, data);
         $.ajax({
             url: '/apps/data-rods-explorer/' + plotType + '/',
@@ -269,11 +269,13 @@ function createPlot(plotType) {
                 }
             },
             success: function (responseHTML) {
+                
                 if (responseHTML.indexOf('Error999') !== -1) {
                     $('#plot-loading').addClass('d-none');
                     displayFlashMessage(error999FlashMessageID, 'warning', $(responseHTML).text());
                 } else {
                     $('#plot-container').html(responseHTML);
+                    $('.dropdown-toggle').dropdown();
                     var hcPlotType = $('.highcharts-plot').attr('data-type');
                     initHighChartsPlot($('.highcharts-plot'), hcPlotType);
                     $('#plot-loading').addClass('d-none');
