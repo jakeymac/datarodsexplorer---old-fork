@@ -182,6 +182,7 @@ function loadDefaultHome() {
     if (navItem) {
         onClickLink($('#nav-' + navItem).prev().children()[0], navItem);
     }
+    oc_model()
 }
 
 function loadDefaultsForPlotNav(data) {

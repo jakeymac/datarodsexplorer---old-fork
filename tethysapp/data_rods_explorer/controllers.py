@@ -108,7 +108,11 @@ def request_map_layer(request):
             # If 'Display map' is clicked, load layers
             tif_layer_manager = TiffLayerManager.create_instance(instance_id)
             tif_layer_manager.request_tiff_layer(post_params)
-            context['success'] = True
+            if tif_layer_manager.error is not None:
+                context['success'] = False
+                context['error'] = tif_layer_manager.error
+            else:
+                context['success'] = True
     return JsonResponse(context)
 
 @controller(name='plot', url='data-rods-explorer/plot')

@@ -10,6 +10,8 @@ import zipfile
 from math import copysign
 from tethysapp.data_rods_explorer.app import DataRodsExplorer as app
 
+import xml.etree.ElementTree as ET
+
 WORKSPACE = 'data_rods_explorer'
 DATARODS_PNG = ('http://giovanni.gsfc.nasa.gov/giovanni/daac-bin/wms_ag4?VERSION=1.1.1'
                 '&SERVICE=WMS&REQUEST=GetMap&SRS=EPSG:4326&WIDTH=512&HEIGHT=256'
@@ -103,28 +105,47 @@ class TiffLayerManager:
             self.message = str(e)
 
     def download_raster_from_nasa(self):
+        # breakpoint()
         try:
             minx, miny, maxx, maxy = self.latlonbox
             # Create tiff file
-
+            
             url = get_datarods_png().format(minx, miny, maxx, maxy, self.time_st,
                                             get_wms_vars()[self.model][self.variable][0])
             print(url)
+            # test url for error testing
+            # url = 'http://giovanni.gsfc.nasa.gov/giovanni/daac-bin/wms_ag4?VERSION=1.1.1&SERVICE=WMS&REQUEST=GetMap&SRS=EPSG:4326&WIDTH=512&HEIGHT=256&LAYERS=Time-Averaged.LPRM_AMSR2_DS_A_SOILM3_001_soil_moisture_c1&STYLES=default&TRANSPARENT=TRUE&FORMAT=image/tiff&time=2012-07-04T00&bbox=-31.207092647775923,-34.15463308264707,-136.31376650786763,85.05112877980659'
             url_image = urllib.request.urlopen(url)  # error
+            content_type = url_image.info().get_content_type()
+            if content_type == 'image/tiff':
 
-            self.tiff_file.write(url_image.read())
-            self.tiff_file.close()
-            # Create prj file
-            self.create_prj_file()
-            # Create tfw file
-            self.create_tfw_file()
-            # Create zipfile
-            self.create_zip_file()
-            self.upload_layer_to_geoserver()
+          
+
+                self.tiff_file.write(url_image.read())
+                self.tiff_file.close()
+                # Create prj file
+                self.create_prj_file()
+                # Create tfw file
+                self.create_tfw_file()
+                # Create zipfile
+                self.create_zip_file()
+                self.upload_layer_to_geoserver()
+            else:
+                if content_type == 'application/vnd.ogc.se_xml':
+                    content = url_image.read().decode('utf-8')
+                    root = ET.fromstring(content)
+                    error_tags = []
+
+                    for child in root.iter():
+                        if child.tag == 'ServiceException':
+                            self.error = str(child.text)
+                            print(child.text)
+
+
         except Exception as e:
             print('download raster from nasa error')
             print(str(e))
-            self.message = str(e)
+            self.error = str(e)
 
     def upload_layer_to_geoserver(self):
         # Geoserver parameters

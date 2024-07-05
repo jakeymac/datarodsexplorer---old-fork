@@ -142,8 +142,27 @@ function load_map() {
     requestMap(data, layerName, layerExtents)
 }
 
+var retryLimit = 15; // Set a retry limit
+var retryCount = 0; // Initialize retry count
+
 function requestMap(data, layerName, layerExtents, instanceId=undefined) {
     var requestMapAgain = false;
+    var map = TETHYS_MAP_VIEW.getMap();
+    var layerExists = map.getLayers().getArray().some(function(layer) {
+        return layer.tethys_legend_title === layerName;
+    });
+    if (layerExists) {
+        hideMapLoading();
+        return;
+    }
+
+    // Remove layers with attribute "is_nasa_map_layer"
+    map.getLayers().getArray().forEach(function(layer) {
+        if (layer.is_nasa_map_layer) {
+            map.removeLayer(layer);
+        }
+    });
+
     if (instanceId === undefined || instanceId === null) {
         instanceId = Math.floor(Math.random() * 1000000000000000);
             data += '&instance_id=' + instanceId;
@@ -158,6 +177,7 @@ function requestMap(data, layerName, layerExtents, instanceId=undefined) {
         success: function (response) {
             if (response.hasOwnProperty('success')) {
                 if (response.success) {
+                    retryCount = 0;
                     if (response.hasOwnProperty('load_layer')) {
                         if (response['load_layer']) {
                             $('#btnDisplayMap').prop('disabled', false);
@@ -180,6 +200,7 @@ function requestMap(data, layerName, layerExtents, instanceId=undefined) {
                             });
                             map.addLayer(newLayer);
                             newLayer['tethys_legend_title'] = layerName;
+                            newLayer['is_nasa_map_layer'] = true;
                             //newLayer['tethys_legend_extent'] = layerExtents; //no longerworks due to ol update
                             //newLayer['tethys_legend_extent_projection'] = 'EPSG:3857';
                             update_legend();
@@ -189,28 +210,44 @@ function requestMap(data, layerName, layerExtents, instanceId=undefined) {
                         requestMapAgain = true;
                     }
                 } else {
+                    console.log(response);
                     if (response.hasOwnProperty('error')) {
                         if (!response.error) {
                             requestMapAgain = true;
+                        }
+                        else {
+                            retryCount = 0;
+                            $('#btnDisplayMap').prop('disabled', false);
+                            hideMapLoading();
+                            displayFlashMessage(mapDisplayErrorFlashMessageID, 'warning', `Error: ${response.error}`);
+                            requestMapAgain = false;
                         }
                     }else {// Error
                         requestMapAgain = true;
                     }
                 }
             }
-            if (requestMapAgain) {// Remove Infinite Loop
-
+            if (requestMapAgain && retryCount < retryLimit) {// Remove Infinite Loop
+                retryCount++;
                 window.setTimeout(function () {requestMap(data, layerName, layerExtents, instanceId);}, 3000);
-
+                
 
             } else {
                 $('#btnDisplayMap').prop('disabled', false);
                 hideMapLoading();
+                retryCount = 0;
                 displayFlashMessage(mapDisplayErrorFlashMessageID, 'warning', mapDisplayErrorFlashMessageText);
+                if (retryCount >= retryLimit) {
+                    displayFlashMessage(mapDisplayErrorFlashMessageID, 'warning', 'Retry limit reached. Please try again later.');
+                } else {
+                    displayFlashMessage(mapDisplayErrorFlashMessageID, 'warning', mapDisplayErrorFlashMessageText);
+                }
+
             }
         }, error: function () {
             $('#btnDisplayMap').prop('disabled', false);
             hideMapLoading();
+            retryCount = 0;
             displayFlashMessage(ajaxErrorFlashMessageID, 'warning', ajaxErrorFlashMessageText);
             removeFlashMessage(mapDisplayErrorFlashMessageID);
         }
