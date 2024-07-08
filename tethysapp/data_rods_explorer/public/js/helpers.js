@@ -361,10 +361,10 @@ function hideMapLoading() {
 function addLegendItem(layer) {
     var title = layer.tethys_legend_title;
     var html =  '<li class="legend-item">' +
-        '<div class="legend-buttons">' +
+        '<div class="legend-buttons dropdown">' +
         '<a class="btn btn-outline-secondary btn-legend-action zoom-control">' + title + '</a>' +
-        '<a class="btn btn-outline-secondary legend-dropdown-toggle">' +
-        '<span class="sr-only">Toggle Dropdown</span>' +
+        '<a class="btn btn-outline-secondary legend-dropdown-toggle" data-bs-toggle="tooltip">' +
+        '<i class="bi bi-caret-down-fill"></i> <span class="visually-hidden">Toggle Dropdown</span>' +
         '</a>' +
         '<div class="tethys-legend-dropdown">' +
         '<ul>' +
@@ -586,7 +586,7 @@ function displayFlashMessage(id, type, message, allowClose) {
     if (allowClose) {
         closeHtml = '<button type="button" class="close" data-bs-dismiss="alert">' +
             '<span aria-hidden="true">&times;</span>' +
-            '<span class="sr-only">Close</span>' +
+            '<span class="visually-hidden">Close</span>' +
             '</button>';
     }
 

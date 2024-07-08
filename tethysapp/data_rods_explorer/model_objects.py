@@ -105,7 +105,6 @@ class TiffLayerManager:
             self.message = str(e)
 
     def download_raster_from_nasa(self):
-        # breakpoint()
         try:
             minx, miny, maxx, maxy = self.latlonbox
             # Create tiff file
