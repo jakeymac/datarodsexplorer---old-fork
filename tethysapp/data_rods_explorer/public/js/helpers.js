@@ -222,7 +222,7 @@ function requestMap(data, layerName, layerExtents, instanceId=undefined) {
                             displayFlashMessage(mapDisplayErrorFlashMessageID, 'warning', `Error: ${response.error}`);
                             requestMapAgain = false;
                         }
-                    }else {// Error
+                    } else {// Error
                         requestMapAgain = true;
                     }
                 }
@@ -230,19 +230,16 @@ function requestMap(data, layerName, layerExtents, instanceId=undefined) {
             if (requestMapAgain && retryCount < retryLimit) {// Remove Infinite Loop
                 retryCount++;
                 window.setTimeout(function () {requestMap(data, layerName, layerExtents, instanceId);}, 3000);
-                
-
             } else {
                 $('#btnDisplayMap').prop('disabled', false);
                 hideMapLoading();
-                retryCount = 0;
-                displayFlashMessage(mapDisplayErrorFlashMessageID, 'warning', mapDisplayErrorFlashMessageText);
+                
                 if (retryCount >= retryLimit) {
                     displayFlashMessage(mapDisplayErrorFlashMessageID, 'warning', 'Retry limit reached. Please try again later.');
                 } else {
                     displayFlashMessage(mapDisplayErrorFlashMessageID, 'warning', mapDisplayErrorFlashMessageText);
                 }
-
+                retryCount = 0;
             }
         }, error: function () {
             $('#btnDisplayMap').prop('disabled', false);
