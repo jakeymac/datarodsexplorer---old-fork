@@ -82,10 +82,6 @@ def home(request):
 
     return render(request, 'data_rods_explorer/app_base_dre.html', context)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> final-update-tethys-4
 @controller(name='map', url='data-rods-explorer/request-map-layer')
 def request_map_layer(request):
     context = {
@@ -120,10 +116,6 @@ def request_map_layer(request):
                 context['success'] = True
     return JsonResponse(context)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> final-update-tethys-4
 @controller(name='plot', url='data-rods-explorer/plot')
 def plot(request):
     """
@@ -169,10 +161,6 @@ def plot(request):
 
     return render(request, 'data_rods_explorer/plot.html', context)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> final-update-tethys-4
 @controller(name='plot2', url='data-rods-explorer/plot2')
 def plot2(request):
     """
@@ -196,10 +184,6 @@ def plot2(request):
 
         return render(request, 'data_rods_explorer/plot.html', context)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> final-update-tethys-4
 @controller(name='years', url='data-rods-explorer/years')
 def years(request):
     """
