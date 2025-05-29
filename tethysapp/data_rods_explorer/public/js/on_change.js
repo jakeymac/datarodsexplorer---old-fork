@@ -1,6 +1,10 @@
 function oc_model() {
-    var GLDASFlashMessageID = 'GLDAS-get-map-disabled';
-    var GLDASFlashMessageText = 'GLDAS does not support the "Display Map" function, ' +
+    var NLDASFlashMessageID = 'NLDAS-get-map-disabled';
+    var NLDASFlashMessageText = 'NLDAS does not support the "Display Map" function, ' +
+        'but data rods data can still be obtained under the "Plot one variable", "Compare two variables", ' +
+        'or "Year-on-year changes" options.';
+    var SMERGEFlashMessageID = 'Smerge-get-map-disabled';
+    var SMERGEFlashMessageText = 'Smerge does not support the "Display Map" function, ' +
         'but data rods data can still be obtained under the "Plot one variable", "Compare two variables", ' +
         'or "Year-on-year changes" options.';
     var href;
@@ -27,12 +31,18 @@ function oc_model() {
     loadVariableOptions('model', 'variable');
     validateClickPoint();
 
-    if (model === "GLDAS") {
+    if (model.includes('NLDAS')) {
         btnDisplayMap.prop('disabled', true);
-        displayFlashMessage(GLDASFlashMessageID, 'info', GLDASFlashMessageText)
+        removeFlashMessage(SMERGEFlashMessageID);
+        displayFlashMessage(NLDASFlashMessageID, 'info', NLDASFlashMessageText)
+    } else if (model.includes('SMERGE')) {
+        btnDisplayMap.prop('disabled', true);
+        removeFlashMessage(NLDASFlashMessageID);
+        displayFlashMessage(SMERGEFlashMessageID, 'info', SMERGEFlashMessageText)
     } else {
         btnDisplayMap.prop('disabled', false);
-        removeFlashMessage(GLDASFlashMessageID)
+        removeFlashMessage(NLDASFlashMessageID);
+        removeFlashMessage(SMERGEFlashMessageID);
     }
 }
 

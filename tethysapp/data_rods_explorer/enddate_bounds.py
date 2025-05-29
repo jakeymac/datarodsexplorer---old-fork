@@ -1,6 +1,10 @@
 from urllib.request import urlopen
 from os import path
 from sys import path as syspath
+
+syspath.append('/usr/local/lib/python2.7/site-packages')  # This is so bs4 and requests will be found #?
+from requests import get
+from bs4 import BeautifulSoup  # ?
 from datetime import datetime, timedelta
 syspath.append('/usr/local/lib/python2.7/site-packages')  # This is so bs4 and requests will be found #?
 from requests import get  # noqa E402
@@ -9,9 +13,8 @@ from bs4 import BeautifulSoup   # ?  # noqa E402
 
 def extract_model_data_from_config_file():
     # Attempt to parse model_config.txt from GitHub repo master branch
-    db_file_url = ('https://raw.githubusercontent.com/gespinoza/datarodsexplorer/master/tethysapp/'
-                   'data_rods_explorer/model_config.txt')
-    db_file_url = ('https://raw.githubusercontent.com/CUAHSI-APPS/datarodsexplorer/master/tethysapp/data_rods_explorer/public/data/model_config.txt')
+    db_file_url = ('https://raw.githubusercontent.com/CUAHSI-APPS/datarodsexplorer/master/tethysapp/'
+                   'data_rods_explorer/public/data/model_config.txt')
     f = get(db_file_url)
     if f.status_code == 200:
         if f.encoding is None:
@@ -21,7 +24,7 @@ def extract_model_data_from_config_file():
         next(lines)  # Skip second line
     else:
         # If the file cannot be parsed from GitHub, use the locally stored file instead
-        db_file = path.join(path.dirname(path.realpath(__file__)), 'model_config.txt')
+        db_file = path.join(path.dirname(path.realpath(__file__)), 'public/data/model_config.txt')
         with open(db_file, mode='r') as f:
             f.readline()  # Skip first line
             f.readline()  # Skip second line
@@ -31,10 +34,15 @@ def extract_model_data_from_config_file():
     model_list = []
 
     for line in lines:
-        line = line.decode()
+        if type(line) == bytes:
+            if f.encoding:
+                line = str(line, f.encoding)
+            else:
+                line = str(line, 'utf-8')
         if line == '\n' or line == '':
             new_model_switch = True
             continue
+
         line = line.strip()
         linevals = line.split('|')
         if new_model_switch:
@@ -48,21 +56,32 @@ def extract_model_data_from_config_file():
                 'version': model_version
             })
             new_model_switch = False
-
     return model_list
 
 
 def write_fences_file(model_list):
-    fencefile = path.join(path.dirname(path.realpath(__file__)), 'dates_and_spatial_range.txt')
-
-    # https://cmr.earthdata.nasa.gov/search/granules?short_name=NLDAS_FORA0125_H&version=002&page_size=1&sort_key=-start_date
-    # https://cmr.earthdata.nasa.gov/search/granules?short_name=NLDAS_NOAH0125_H&version=002&page_size=1&sort_key=-start_date
-    # https://cmr.earthdata.nasa.gov/search/granules?short_name=GLDAS_NOAH025SUBP_3H&version=001&page_size=1&sort_key=-start_date
-    # https://cmr.earthdata.nasa.gov/search/granules?short_name=GLDAS_NOAH025_3H&version=2.0&page_size=1&sort_key=-start_date
-    # https://cmr.earthdata.nasa.gov/search/granules?short_name=TRMM_3B42&version=7&page_size=1&sort_key=-start_date
-    # https://cmr.earthdata.nasa.gov/search/granules?short_name=LPRM_AMSRE_D_SOILM3&version=002&page_size=1&sort_key=-start_date
-    # https://cmr.earthdata.nasa.gov/search/granules?short_name=LPRM_AMSRE_A_SOILM3&version=002&page_size=1&sort_key=-start_date
-    # https://cmr.earthdata.nasa.gov/search/granules?short_name=GRACEDADM_CLSM025NA_7D&version=1.0&page_size=1&sort_key=-start_date
+    fencefile = path.join(path.dirname(path.realpath(__file__)), 'public/data/dates_and_spatial_range.txt')
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=NLDAS_FORA0125_H&version=002&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=NLDAS_NOAH0125_H&version=002&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=NLDAS_FORA0125_H&version=002&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=GLDAS_NOAH025_3H&version=2.1&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=GLDAS_NOAH025_3H&version=2.0&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=SMERGE_RZSM0_40CM&version=2.0&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=GRACEDADM_CLSM0125US_7D&version=4.0&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=LPRM_AMSRE_D_SOILM3&version=002&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=LPRM_AMSRE_D_RZSM3&version=001&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=LPRM_AMSRE_A_SOILM3&version=002&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=LPRM_AMSR2_DS_D_SOILM3&version=001&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=LPRM_AMSR2_DS_A_SOILM3&version=001&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=LPRM_AMSR2_DS_D_SOILM3&version=001&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=LPRM_AMSR2_DS_D_SOILM3&version=001&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=LPRM_TMI_DY_SOILM3&version=001&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=LPRM_TMI_NT_SOILM3&version=001&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=TRMM_3B42&version=7&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=MST1NXMLD&version=5.2.0&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=M2T1NXFLX&version=5.12.4&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=M2T1NXLFO&version=5.12.4&page_size=1&sort_key=start_date
+    # https://cmr.earthdata.nasa.gov/search/granules?short_name=M2I1NXLFO&version=5.12.4&page_size=1&sort_key=start_date
     url_pattern = "https://cmr.earthdata.nasa.gov/search/granules?short_name={0}&version={1}&page_size=1&sort_key={2}"
     columnheadings = "Model name | Begin time | End time | N , E , S , W bounds\n"
     model_output_pattern = "{0}|{1}|{2}|{3}\n"
@@ -76,10 +95,14 @@ def write_fences_file(model_list):
             middleman_url2 = url_pattern.format(model['short_name'], model['version'], '-start_date')
             url1 = get_url2(middleman_url1)
             url2 = get_url2(middleman_url2)
-
-            begin_time = convert_datetime(get_begintime(url1))
-            end_time = convert_datetime(get_endtime(url2))
-            bounds = get_bounds(url2)
+            try:
+                begin_time = convert_datetime(get_begintime(url1))
+                end_time = convert_datetime(get_endtime(url2))
+                bounds = get_bounds(url2)
+            except:
+                print(model["key"] + " failed to get dates and spatial range.")
+                f.write(model_output_pattern.format(model['key'], "", "", ""))
+                continue
 
             if model['key'] == 'GLDAS':
                 end_date = get_endtime(url2).split('T')[0]
@@ -99,7 +122,8 @@ def write_fences_file(model_list):
                     if 'end_time' in line:
                         end_time = datetime.strptime(line.split('=')[1], '%Y/%m/%d/%H').strftime('%m/%d/%Y %H:00:00')
                         break
-
+            if begin_time == "":
+                begin_time = '04/01/2002 00:00:00'
             f.write(model_output_pattern.format(model['key'], begin_time, end_time, bounds))
 
 

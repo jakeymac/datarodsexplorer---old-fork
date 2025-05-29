@@ -142,8 +142,27 @@ function load_map() {
     requestMap(data, layerName, layerExtents)
 }
 
+var retryLimit = 15; // Set a retry limit
+var retryCount = 0; // Initialize retry count
+
 function requestMap(data, layerName, layerExtents, instanceId=undefined) {
     var requestMapAgain = false;
+    var map = TETHYS_MAP_VIEW.getMap();
+    var layerExists = map.getLayers().getArray().some(function(layer) {
+        return layer.tethys_legend_title === layerName;
+    });
+    if (layerExists) {
+        hideMapLoading();
+        return;
+    }
+
+    // Remove layers with attribute "is_nasa_map_layer"
+    map.getLayers().getArray().forEach(function(layer) {
+        if (layer.is_nasa_map_layer) {
+            map.removeLayer(layer);
+        }
+    });
+
     if (instanceId === undefined || instanceId === null) {
         instanceId = Math.floor(Math.random() * 1000000000000000);
             data += '&instance_id=' + instanceId;
@@ -158,6 +177,7 @@ function requestMap(data, layerName, layerExtents, instanceId=undefined) {
         success: function (response) {
             if (response.hasOwnProperty('success')) {
                 if (response.success) {
+                    retryCount = 0;
                     if (response.hasOwnProperty('load_layer')) {
                         if (response['load_layer']) {
                             $('#btnDisplayMap').prop('disabled', false);
@@ -180,6 +200,7 @@ function requestMap(data, layerName, layerExtents, instanceId=undefined) {
                             });
                             map.addLayer(newLayer);
                             newLayer['tethys_legend_title'] = layerName;
+                            newLayer['is_nasa_map_layer'] = true;
                             //newLayer['tethys_legend_extent'] = layerExtents; //no longerworks due to ol update
                             //newLayer['tethys_legend_extent_projection'] = 'EPSG:3857';
                             update_legend();
@@ -189,28 +210,41 @@ function requestMap(data, layerName, layerExtents, instanceId=undefined) {
                         requestMapAgain = true;
                     }
                 } else {
+                    console.log(response);
                     if (response.hasOwnProperty('error')) {
                         if (!response.error) {
                             requestMapAgain = true;
                         }
-                    }else {// Error
+                        else {
+                            retryCount = 0;
+                            $('#btnDisplayMap').prop('disabled', false);
+                            hideMapLoading();
+                            displayFlashMessage(mapDisplayErrorFlashMessageID, 'warning', `Error: ${response.error}`);
+                            requestMapAgain = false;
+                        }
+                    } else {// Error
                         requestMapAgain = true;
                     }
                 }
             }
-            if (requestMapAgain) {// Remove Infinite Loop
-
+            if (requestMapAgain && retryCount < retryLimit) {// Remove Infinite Loop
+                retryCount++;
                 window.setTimeout(function () {requestMap(data, layerName, layerExtents, instanceId);}, 3000);
-
-
             } else {
                 $('#btnDisplayMap').prop('disabled', false);
                 hideMapLoading();
-                displayFlashMessage(mapDisplayErrorFlashMessageID, 'warning', mapDisplayErrorFlashMessageText);
+                
+                if (retryCount >= retryLimit) {
+                    displayFlashMessage(mapDisplayErrorFlashMessageID, 'warning', 'Retry limit reached. Please try again later.');
+                } else {
+                    displayFlashMessage(mapDisplayErrorFlashMessageID, 'warning', mapDisplayErrorFlashMessageText);
+                }
+                retryCount = 0;
             }
         }, error: function () {
             $('#btnDisplayMap').prop('disabled', false);
             hideMapLoading();
+            retryCount = 0;
             displayFlashMessage(ajaxErrorFlashMessageID, 'warning', ajaxErrorFlashMessageText);
             removeFlashMessage(mapDisplayErrorFlashMessageID);
         }
@@ -234,7 +268,6 @@ function createPlot(plotType) {
     removeFlashMessage(pointOutBoundsFlashMessageID);
     removeFlashMessage(error999FlashMessageID);
 
-
     load_map_post_parameters();
     var data = {};
     var formParams = $('#parametersForm').serializeArray();
@@ -257,6 +290,7 @@ function createPlot(plotType) {
         displayFlashMessage(pointOutBoundsFlashMessageID, 'warning', pointOutBoundsFlashMessageText);
     } else {
         $('#plot-loading').removeClass('d-none');
+        $("#plot-container").empty();
         displayNasaPlotRequestOutput(plotType, data);
         $.ajax({
             url: '/apps/data-rods-explorer/' + plotType + '/',
@@ -269,11 +303,13 @@ function createPlot(plotType) {
                 }
             },
             success: function (responseHTML) {
+                
                 if (responseHTML.indexOf('Error999') !== -1) {
                     $('#plot-loading').addClass('d-none');
                     displayFlashMessage(error999FlashMessageID, 'warning', $(responseHTML).text());
                 } else {
                     $('#plot-container').html(responseHTML);
+                    $('.dropdown-toggle').dropdown();
                     var hcPlotType = $('.highcharts-plot').attr('data-type');
                     initHighChartsPlot($('.highcharts-plot'), hcPlotType);
                     $('#plot-loading').addClass('d-none');
@@ -299,7 +335,11 @@ function createPlot(plotType) {
                     });
                 }
             }, error: function () {
+<<<<<<< HEAD
                 $('#plot-loading').addClass('hi');
+=======
+                $('#plot-loading').addClass('d-none');
+>>>>>>> final-update-tethys-4
                 displayFlashMessage(unexpectedErrorFlashMessageID, 'danger', unexpectedErrorFlashMessageText);
             }
         });
@@ -322,11 +362,18 @@ function hideMapLoading() {
 function addLegendItem(layer) {
     var title = layer.tethys_legend_title;
     var html =  '<li class="legend-item">' +
+<<<<<<< HEAD
         '<div class="legend-buttons">' +
         '<a class="btn btn-outline-secondary btn-legend-action zoom-control">' + title + '</a>' +
         '<a class="btn btn-outline-secondary legend-dropdown-toggle">' +
         '<span class="caret"></span>' +
         '<span class="sr-only">Toggle Dropdown</span>' +
+=======
+        '<div class="legend-buttons dropdown">' +
+        '<a class="btn btn-outline-secondary btn-legend-action zoom-control">' + title + '</a>' +
+        '<a class="btn btn-outline-secondary legend-dropdown-toggle" data-bs-toggle="tooltip">' +
+        '<i class="bi bi-caret-down-fill"></i> <span class="visually-hidden">Toggle Dropdown</span>' +
+>>>>>>> final-update-tethys-4
         '</a>' +
         '<div class="tethys-legend-dropdown">' +
         '<ul>' +
@@ -532,6 +579,7 @@ function displayFlashMessage(id, type, message, allowClose) {
 
     switch (type) {
         case 'success':
+<<<<<<< HEAD
             sign = 'check-circle-fill';
             break;
         case 'info':
@@ -542,6 +590,12 @@ function displayFlashMessage(id, type, message, allowClose) {
             break;
         case 'danger':
             sign = 'x-circle-fill';
+=======
+            sign = 'check';
+            break;
+        case 'danger':
+            sign = 'x';
+>>>>>>> final-update-tethys-4
             break;
         default:
             sign = type;
@@ -552,16 +606,26 @@ function displayFlashMessage(id, type, message, allowClose) {
     }
 
     if (allowClose) {
+<<<<<<< HEAD
         closeHtml = '<button type="button" class="close" data-dismiss="alert">' +
             '<span aria-d-none="true">&times;</span>' +
             '<span class="sr-only">Close</span>' +
+=======
+        closeHtml = '<button type="button" class="close" data-bs-dismiss="alert">' +
+            '<span aria-hidden="true">&times;</span>' +
+            '<span class="visually-hidden">Close</span>' +
+>>>>>>> final-update-tethys-4
             '</button>';
     }
 
     $('.flash-messages').append(
         '<div id="' + id + '" class="alert alert-' + type + ' alert-dismissible" role="alert">' +
         closeHtml +
+<<<<<<< HEAD
         '<i class="bi bi-' + sign + '" </i> ' +
+=======
+        '<b><span class="bi bi-' + sign + '-circle" aria-hidden="true"></span> ' +
+>>>>>>> final-update-tethys-4
         message +
         '</b></div>'
     );

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from tethys_sdk.gizmos import SelectInput, Button, TimeSeries, MapView
+from tethys_sdk.routing import controller
 from .model_objects import get_wms_vars, get_datarods_png, get_datarods_tsb, \
     get_model_fences, get_model_options, get_var_dict, init_model, TiffLayerManager
 from .utilities import create_map, create_select_model, create_plot_ctrls, create_map_date_ctrls, \
@@ -33,7 +34,7 @@ def home(request):
                                 original=True,
                                 options=get_model_options(),
                                 attributes="onchange=oc_model2();",
-                                classes="w-100 mb-3"
+                                classes="w-100 mb-3 form-control"
                                 )
 
     years_list = create_years_list(1979)
@@ -43,6 +44,7 @@ def home(request):
                                original=False,
                                options=years_list,
                                attributes="onchange=oc_years();"
+                               
                                )
 
     plot_button3 = Button(display_text='Plot',
@@ -80,7 +82,10 @@ def home(request):
 
     return render(request, 'data_rods_explorer/app_base_dre.html', context)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> final-update-tethys-4
 @controller(name='map', url='data-rods-explorer/request-map-layer')
 def request_map_layer(request):
     context = {
@@ -108,10 +113,17 @@ def request_map_layer(request):
             # If 'Display map' is clicked, load layers
             tif_layer_manager = TiffLayerManager.create_instance(instance_id)
             tif_layer_manager.request_tiff_layer(post_params)
-            context['success'] = True
+            if tif_layer_manager.error is not None:
+                context['success'] = False
+                context['error'] = tif_layer_manager.error
+            else:
+                context['success'] = True
     return JsonResponse(context)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> final-update-tethys-4
 @controller(name='plot', url='data-rods-explorer/plot')
 def plot(request):
     """
@@ -157,7 +169,10 @@ def plot(request):
 
     return render(request, 'data_rods_explorer/plot.html', context)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> final-update-tethys-4
 @controller(name='plot2', url='data-rods-explorer/plot2')
 def plot2(request):
     """
@@ -181,7 +196,10 @@ def plot2(request):
 
         return render(request, 'data_rods_explorer/plot.html', context)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> final-update-tethys-4
 @controller(name='years', url='data-rods-explorer/years')
 def years(request):
     """
