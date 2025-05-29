@@ -27,11 +27,7 @@ def create_select_model(modelname):
                                original=True,
                                options=get_model_options(),
                                attributes="onchange=oc_model();",
-<<<<<<< HEAD
-                               classes="w-100"
-=======
                                classes="w-100 mb-3 form-control"
->>>>>>> final-update-tethys-4
                                )
     return select_model
 
@@ -102,11 +98,7 @@ def create_map_date_ctrls(model):
                                        ('20:00', '20'), ('21:00', '21'), ('22:00', '22'), ('23:00', '23')],
                               initial=['00:00'],
                               attributes='onchange=oc_map_dt();',
-<<<<<<< HEAD
-                              classes='w-100 h-100 mb-3'
-=======
                               classes='form-control'
->>>>>>> final-update-tethys-4
                               )
 
     return [select_date, select_hour]

@@ -12,11 +12,7 @@ function onClickLink(link, navItem) {
     } else {
         $('.nav-link').removeClass('open');
         $(link).addClass('open');
-<<<<<<< HEAD
-        $('.nav-item').addClass('d-none');
-=======
         $('.plot-form').addClass('d-none');
->>>>>>> final-update-tethys-4
         $('#nav-' + navItem).removeClass('d-none');
 
         loadNavOptionsAndParams(navItem);

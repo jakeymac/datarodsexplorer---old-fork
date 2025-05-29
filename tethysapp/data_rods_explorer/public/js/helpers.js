@@ -335,11 +335,7 @@ function createPlot(plotType) {
                     });
                 }
             }, error: function () {
-<<<<<<< HEAD
-                $('#plot-loading').addClass('hi');
-=======
                 $('#plot-loading').addClass('d-none');
->>>>>>> final-update-tethys-4
                 displayFlashMessage(unexpectedErrorFlashMessageID, 'danger', unexpectedErrorFlashMessageText);
             }
         });
@@ -362,18 +358,10 @@ function hideMapLoading() {
 function addLegendItem(layer) {
     var title = layer.tethys_legend_title;
     var html =  '<li class="legend-item">' +
-<<<<<<< HEAD
-        '<div class="legend-buttons">' +
-        '<a class="btn btn-outline-secondary btn-legend-action zoom-control">' + title + '</a>' +
-        '<a class="btn btn-outline-secondary legend-dropdown-toggle">' +
-        '<span class="caret"></span>' +
-        '<span class="sr-only">Toggle Dropdown</span>' +
-=======
         '<div class="legend-buttons dropdown">' +
         '<a class="btn btn-outline-secondary btn-legend-action zoom-control">' + title + '</a>' +
         '<a class="btn btn-outline-secondary legend-dropdown-toggle" data-bs-toggle="tooltip">' +
         '<i class="bi bi-caret-down-fill"></i> <span class="visually-hidden">Toggle Dropdown</span>' +
->>>>>>> final-update-tethys-4
         '</a>' +
         '<div class="tethys-legend-dropdown">' +
         '<ul>' +
@@ -579,23 +567,10 @@ function displayFlashMessage(id, type, message, allowClose) {
 
     switch (type) {
         case 'success':
-<<<<<<< HEAD
-            sign = 'check-circle-fill';
-            break;
-        case 'info':
-            sign = 'info-circle-fill';
-            break;
-        case 'warning':
-            sign = 'exclamation-triangle';
-            break;
-        case 'danger':
-            sign = 'x-circle-fill';
-=======
             sign = 'check';
             break;
         case 'danger':
             sign = 'x';
->>>>>>> final-update-tethys-4
             break;
         default:
             sign = type;
@@ -606,26 +581,16 @@ function displayFlashMessage(id, type, message, allowClose) {
     }
 
     if (allowClose) {
-<<<<<<< HEAD
-        closeHtml = '<button type="button" class="close" data-dismiss="alert">' +
-            '<span aria-d-none="true">&times;</span>' +
-            '<span class="sr-only">Close</span>' +
-=======
         closeHtml = '<button type="button" class="close" data-bs-dismiss="alert">' +
             '<span aria-hidden="true">&times;</span>' +
             '<span class="visually-hidden">Close</span>' +
->>>>>>> final-update-tethys-4
             '</button>';
     }
 
     $('.flash-messages').append(
         '<div id="' + id + '" class="alert alert-' + type + ' alert-dismissible" role="alert">' +
         closeHtml +
-<<<<<<< HEAD
-        '<i class="bi bi-' + sign + '" </i> ' +
-=======
         '<b><span class="bi bi-' + sign + '-circle" aria-hidden="true"></span> ' +
->>>>>>> final-update-tethys-4
         message +
         '</b></div>'
     );
