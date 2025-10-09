@@ -587,7 +587,7 @@ function displayFlashMessage(id, type, message, allowClose) {
             '</button>';
     }
 
-    $('.flash-messages').append(
+    $('#top-info-container').append(
         '<div id="' + id + '" class="alert alert-' + type + ' alert-dismissible" role="alert">' +
         closeHtml +
         '<b><span class="bi bi-' + sign + '-circle" aria-hidden="true"></span> ' +
@@ -598,7 +598,7 @@ function displayFlashMessage(id, type, message, allowClose) {
 }
 
 function removeFlashMessage(id) {
-    $('.flash-messages').find('#' + id).remove();
+    $('#top-info-container').find('#' + id).remove();
 }
 
 function pointIsOutOfBounds(pointLonLat, model1, model2) {

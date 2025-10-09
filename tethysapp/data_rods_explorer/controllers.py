@@ -24,7 +24,7 @@ def home(request):
     select_date, select_hour = create_map_date_ctrls(model)
 
     # Load map
-    map_view, map_view_options = create_map()
+    map_view_options = create_map()
 
     start_date1, end_date1, plot_button1 = create_plot_ctrls(model, 'plot')
     start_date2, end_date2, plot_button2 = create_plot_ctrls(model, 'plot2')
@@ -60,7 +60,6 @@ def home(request):
     # Context variables
     context = {
         'select_model': select_model,
-        'MapView': MapView,
         'map_view_options': map_view_options,
         'select_date': select_date,
         'select_hour': select_hour,

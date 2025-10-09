@@ -60,14 +60,14 @@ def create_map():
         controls=['ZoomSlider'],
         layers=[],
         view=view_options,
-        basemap=['OpenStreetMap'],
+        basemap=['OpenStreetMap',],
         draw=draw_options,
         legend=True,
         disable_basemap=False,
 
     )
     # Return map element
-    return [MapView, map_view_options]
+    return map_view_options
 
 
 def create_map_date_ctrls(model):
