@@ -109,7 +109,8 @@ function oc_model2() {
 
     updateFences('2', model2);
     GET['model2'] = model2;
-    GET['variable2'] = VAR_DICT[model2][0].value; //1st element
+    GET['map_variable2'] = VAR_DICT[model2][0].value; //1st element
+    GET['plot_variable2'] = VAR_DICT[model2][0].variable;
     var endDate = dateHourPickerToRodsDate($('#endDate2').val(), '23');
     var startDate = dateHourPickerToRodsDate($('#startDate2').val(), '00');
 

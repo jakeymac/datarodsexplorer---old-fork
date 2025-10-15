@@ -102,14 +102,17 @@ function loadNavOptionsAndParams(navItem) {
             }
 
             data['model2'] = model2;
-
+            
             if (model === model2 && map_var == VAR_DICT[model][0].value) {
-                varia2 = VAR_DICT[model2][1].value;
+                varia2 = VAR_DICT[model2][1].variable;
+                map_var2 = VAR_DICT[model2][1].value;
             } else {
-                varia2 = VAR_DICT[model2][0].value;
+                varia2 = VAR_DICT[model2][0].variable;
+                map_var2 = VAR_DICT[model2][0].value;
             }
 
-            data['variable2'] = varia2;
+            data['plot_variable2'] = varia2;
+            data['map_variable2'] = map_var2;
         }
 
     } else if (navItem == 'years') {

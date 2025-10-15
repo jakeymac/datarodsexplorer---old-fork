@@ -169,15 +169,14 @@ def plot2(request):
     # Plot
     if post and post['pointLonLat'] != '-9999':
         point_lon_lat = post['pointLonLat']
-        datarod_ts, datarods_urls_dict = get_data_rod_plot2(post, point_lon_lat)
-        timeseries_plot = {'y1_axis_units': get_wms_vars()[post['model']][post['variable']][2],
-                           'y2_axis_units': get_wms_vars()[post['model2']][post['variable2']][2],
+        datarod_ts = get_data_rod_plot2(post, point_lon_lat)
+        timeseries_plot = {'y1_axis_units': get_wms_vars()[post['model']][post['map_variable']][2],
+                           'y2_axis_units': get_wms_vars()[post['model2']][post['map_variable2']][2],
                            'series': datarod_ts}
 
         context = {
             'timeseries_plot': timeseries_plot,
             'plot_type': 'plot2',
-            'datarods_urls_dict': datarods_urls_dict
         }
 
         return render(request, 'data_rods_explorer/plot.html', context)

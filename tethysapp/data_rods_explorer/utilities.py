@@ -245,27 +245,35 @@ def get_data_rod_plot(req_get, point_lon_lat):
 
 
 def get_data_rod_plot2(req_get, point_lon_lat):
-    start_date = req_get['startDate']
-    end_date = req_get['endDate']
+    lon, lat = point_lon_lat.split(',')
 
-    # 1st variable
+    request_params_1 = {
+        "plot_variable": req_get['plot_variable'],
+        "lon": lon,
+        "lat": lat,
+        "start_date": req_get['startDate'],
+        "end_date": req_get['endDate']
+    }
+
+    data1 = get_data_from_nasa_server(request_params_1)
+
+    request_params_2 = {
+        "plot_variable" : req_get['plot_variable2'],
+        "lon": lon,
+        "lat": lat,
+        "start_date": req_get['startDate'],
+        "end_date": req_get['endDate'],
+    }
+
+    data2 = get_data_from_nasa_server(request_params_2)
+
+
     model1 = req_get['model']
-    variable1 = req_get['variable']
-    superstring1 = get_datarods_tsb()[model1]
-
-    dr_link1 = str(superstring1.format(variable1, point_lon_lat.replace(',', ',%20'),
-                                       start_date, end_date))
-
-    data1 = get_data_from_nasa_server(dr_link1)
-
-    # 2nd variable
     model2 = req_get['model2']
-    variable2 = req_get['variable2']
-    superstring2 = get_datarods_tsb()[model2]
 
-    dr_link2 = str(superstring2.format(variable2, point_lon_lat.replace(',', ',%20'),
-                                       start_date, end_date))
-    data2 = get_data_from_nasa_server(dr_link2)
+    variable1 = req_get['map_variable']
+    variable2 = req_get['map_variable2']
+
     # Create list
     dr_ts = [{'name': get_wms_vars()[model1][variable1][1] + ' (' + get_wms_vars()[model1][variable1][2] + ')',
               'data': data1,
@@ -274,9 +282,7 @@ def get_data_rod_plot2(req_get, point_lon_lat):
               'data': data2,
               'code': str(variable2) + ' (' + get_wms_vars()[model2][variable2][2] + ')'}]
 
-    datarods_urls_dict = generate_datarods_urls_dict([dr_link1, dr_link2])
-    return dr_ts, datarods_urls_dict
-
+    return dr_ts
 
 def get_data_rod_years(req_post, point_lon_lat):
     variable = req_post['variable']
