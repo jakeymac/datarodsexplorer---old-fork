@@ -51,7 +51,11 @@ function loadVariableOptions(mod12, var12, data) {
         var selectElement = document.getElementById(var12);
         for(var i = 0, l = vecOption.length; i < l; i++) {
             var vec = vecOption[i];
-            selectElement.options.add(new Option(vec.text, vec.value, vec.selected));
+            let newOption = new Option(vec.text);
+            newOption.setAttribute('data-wms-name', vec.value);
+            newOption.setAttribute('data-variable-name', vec.variable);
+            selectElement.options.add(newOption);
+
         }
         if (GET['model'] === GET['model2'] && var12 === 'variable2') {
             removeVariable2Options(GET['variable']);
@@ -134,7 +138,7 @@ function load_map() {
     removeFlashMessage(ajaxErrorFlashMessageID);
 
     data += '&plotTime=' + urlVars['plotTime'];
-    data += '&variable=' + urlVars['variable'];
+    data += '&variable=' + urlVars['map_variable'];
     data += '&model=' + urlVars['model'];
     $('#btnDisplayMap').prop('disabled', true);
 
@@ -353,6 +357,18 @@ function showMapLoading() {
 
 function hideMapLoading() {
     $('#map-loading').addClass('d-none');
+}
+
+function getProxyDownload(output_type) {
+    const params = getUrlVars();
+    const searchParams = new URLSearchParams();
+    Object.keys(params).forEach(key => {
+        if (params[key] !== undefined && params[key] !== null) {
+            searchParams.append(key, params[key]);
+        }
+    });
+    const url = `/apps/data-rods-explorer/proxy-download/${output_type}/?${searchParams.toString()}`;
+    window.open(url);
 }
 
 function addLegendItem(layer) {

@@ -7,14 +7,17 @@
             View Raw Data from NASA in New Tab...
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdown-export">
-            <li class="option-viewData" id="optn-viewDataAscii" onclick="openDataRodsUrls({{ datarods_urls_dict.asc2 }})">
+            <li class="option-viewData" id="optn-viewDataAscii" onclick="getProxyDownload('asc2')">
                 ASCII
             </li>
-            <li class="option-viewData" id="optn-viewDataNetCDF" onclick="openDataRodsUrls({{ datarods_urls_dict.netcdf }})">
+            <li class="option-viewData" id="optn-viewDataNetCDF" onclick="getProxyDownload('netcdf')">
                 NetCDF
             </li>
-            <li class="option-viewData" id="optn-viewDataPlot" onclick="openDataRodsUrls({{ datarods_urls_dict.plot }})">
+            <li class="option-viewData" id="optn-viewDataPlot" onclick="getProxyDownload('plot')">
                 Plot
+            </li>
+            <li class="option-viewData" id="optn-viewDataPlot"  onclick="getProxyDownload('waterml')">
+                WaterML
             </li>
         </ul>
     </div>

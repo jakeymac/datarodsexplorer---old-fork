@@ -1,4 +1,9 @@
 # coding=utf-8
+import netrc
+import io
+import requests
+from requests.auth import HTTPBasicAuth
+from django.http import HttpResponse
 import urllib.request
 import urllib.error
 import urllib.parse
@@ -55,7 +60,7 @@ def create_map():
     )
     # Define map view options
     map_view_options = MapView(
-        height='500px',
+        height='100%',
         width='100%',
         controls=['ZoomSlider'],
         layers=[],
@@ -157,74 +162,86 @@ def create_years_list(first_year=1979):
         years_list.append((str(yyyy), str(yyyy)))
     return sorted(years_list, key=lambda year: year[0], reverse=True)
 
+def normalize_time_string(time_string):
+    return datetime.strptime(time_string, "%Y-%m-%dT%H").strftime("%Y-%m-%dT%H:%M:%S")
 
-def get_data_from_nasa_server(link, overlap_years=False):
-    data = []
-    error_found = True
-    time = 22
-    found_data = False
-    data_flag_text = 'Date&Time'
-    error_flag_text = 'ERROR:'
-    nasa_error_message = None
-    custom_error_message = ('ERROR 999: Data returned by NASA was either missing the expected "%s” line to '
-                            'indicate the start of the data, or returned with an empty dataset.'
-                            % data_flag_text)
-    s_lines = []
 
-    while error_found and time >= 0:
-        nasa_error_message = None
-        s_file = urllib.request.urlopen(link)
 
-        for line in s_file.readlines():
-            if data_flag_text.encode() in line:
-                found_data = True
-                error_found = False
-                continue
+def get_data_from_nasa_server(request_params, overlap_years=False, file_output_type = None):
+    time_series_url = "https://api.giovanni.earthdata.nasa.gov/timeseries"
 
-            if not found_data and error_flag_text.encode() in line:
-                nasa_error_message = line
-                link = link[:-2] + "%02d" % time
-                time -= 1
-                break
+    lon = request_params['lon']
+    lat = request_params['lat']
+    time_start = normalize_time_string(request_params['start_date'])
+    time_end = normalize_time_string(request_params['end_date'])
+    data = request_params['plot_variable']
+    
+    headers = {"authorizationtoken": get_earthdata_token()}
 
-            if found_data:
-                s_lines.append(line)
+    query_parameters = {
+            "data": data,
+            "location": f"[{float(lat)}, {float(lon)}]",
+            "time": f"{time_start}/{time_end}",
+        }
 
-        s_file.close()
+    if file_output_type:
+        query_parameters['type'] = file_output_type
+        response = requests.get(time_series_url, params=query_parameters, headers=headers, stream=True)
+        content_type = response.headers.get('Content-Type', 'application/octet-stream')
+        django_response = HttpResponse(response.raw, content_type=content_type)
+        django_response['Content-Disposition'] = f'attachment; filename="data.{file_output_type}"'
 
-    if len(s_lines) < 1:
-        raise Exception(custom_error_message)
-    elif nasa_error_message:
-        raise Exception(nasa_error_message)
+        return django_response
+    else:
+        response = requests.get(time_series_url, params=query_parameters, headers=headers)
 
-    for row in s_lines:
-        row_ls = row.strip()
-        row_ls = row_ls.decode().replace(' ', '-', 1)
-        row_ls = row_ls.split()
-        try:
-            date = '2000' + row_ls[0][4:] if overlap_years else row_ls[0]
-            val = row_ls[1]
-            date_val_pair = [dateparser.parse(date), float(val)]
-        except Exception:
-            continue
-        data.append(date_val_pair)
+        data_list = []
 
-    return data
+        with io.StringIO(response.text) as f:
+            for line in f:
+                if line.strip().startswith("Timestamp"):
+                    break
+
+            for line in f:
+                if not line.strip():
+                    continue
+
+                parts = line.strip().split(",")
+                if len(parts) < 2:
+                    continue
+
+                date = parts[0]
+                value = float(parts[1])
+
+                try:
+                    if overlap_years:
+                        date = "2000" + date[4:]
+                    date = dateparser.parse(date)
+                    data_list.append([date, value])
+                except Exception:
+                    continue
+                
+        if not data_list:
+            raise Exception(
+                f"ERROR 999: NASA GiC service returned no usable data for {lat},{lon} parameter '{data}'."
+            )
+        
+        return data_list
 
 
 def get_data_rod_plot(req_get, point_lon_lat):
-    model = req_get['model']
-    variable = req_get['variable']
-    superstring = get_datarods_tsb()[model]
+    lon, lat = point_lon_lat.split(',')
 
-    dr_link = str(superstring.format(variable, point_lon_lat.replace(',', ',%20'),
-                                     req_get['startDate'], req_get['endDate']))
+    request_params = {
+        "plot_variable": req_get['plot_variable'],
+        "lon": lon,
+        "lat": lat,
+        "start_date": req_get['startDate'],
+        "end_date": req_get['endDate'],
+    }
+    dr_ts = get_data_from_nasa_server(request_params)
 
-    dr_ts = get_data_from_nasa_server(dr_link)
-
-    datarods_urls_dict = generate_datarods_urls_dict([dr_link])
-
-    return dr_ts, datarods_urls_dict
+    return dr_ts
 
 
 def get_data_rod_plot2(req_get, point_lon_lat):
@@ -311,3 +328,10 @@ def generate_datarods_urls_dict(asc2_urls):
         'waterml': waterml_urls,
         'netcdf': netcdf_urls
     }
+
+def get_earthdata_token():
+    url = "https://api.giovanni.earthdata.nasa.gov/signin"
+    token = requests.get(url, auth=HTTPBasicAuth(netrc.netrc().hosts["urs.earthdata.nasa.gov"][0],
+                         netrc.netrc().hosts["urs.earthdata.nasa.gov"][2]),
+                         allow_redirects=True).text.replace('"','')
+    return token

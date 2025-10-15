@@ -5,7 +5,7 @@ from tethys_sdk.routing import controller
 from .model_objects import get_wms_vars, get_datarods_png, get_datarods_tsb, \
     get_model_fences, get_model_options, get_var_dict, init_model, TiffLayerManager
 from .utilities import create_map, create_select_model, create_plot_ctrls, create_map_date_ctrls, \
-    create_years_list, get_data_rod_plot, get_data_rod_plot2, get_data_rod_years
+    create_years_list, get_data_rod_plot, get_data_rod_plot2, get_data_rod_years, get_data_from_nasa_server
 from json import dumps
 from tethys_sdk.routing import controller
 
@@ -126,10 +126,10 @@ def plot(request):
     # Plot
     if post and post['pointLonLat'] != '-9999':
         try:
-            varname = get_wms_vars()[post['model']][post['variable']][1]
-            varunit = get_wms_vars()[post['model']][post['variable']][2]
+            varname = get_wms_vars()[post['model']][post['map_variable']][1]
+            varunit = get_wms_vars()[post['model']][post['map_variable']][2]
             point_lon_lat = post['pointLonLat']
-            datarod_ts, datarods_urls_dict = get_data_rod_plot(post, point_lon_lat)
+            datarod_ts = get_data_rod_plot(post, point_lon_lat)
             timeseries_plot = TimeSeries(
                 height='250px',
                 width='100%',
@@ -144,7 +144,6 @@ def plot(request):
             )
             context = {
                 'timeseries_plot': timeseries_plot,
-                'datarods_urls_dict': datarods_urls_dict,
                 'plot_type': 'plot'
             }
         except Exception as e:
@@ -214,6 +213,22 @@ def years(request):
 
         return render(request, 'data_rods_explorer/plot.html', context)
 
+@controller(name='proxy_download', url='data-rods-explorer/proxy-download/{output_type}')
+def proxy_download(request, output_type):
+    """
+    Controller to proxy download data files from NASA server. (ASCII, NetCDF, Plot)
+    """
+    get_params = request.GET
+    request_params = {
+        'model': get_params.get('model', None),
+        'plot_variable': get_params.get('plot_variable', None),
+        'lat': get_params.get('lat', None),
+        'lon': get_params.get('lon', None),
+        'start_date': get_params.get('startDate', None),
+        'end_date': get_params.get('endDate', None)
+    }
+
+    return get_data_from_nasa_server(request_params, file_output_type=output_type)
 
 '''
 def upload_to_hs(request):

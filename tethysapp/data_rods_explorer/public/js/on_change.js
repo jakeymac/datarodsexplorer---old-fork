@@ -15,7 +15,8 @@ function oc_model() {
     // All datepickers (plotTime, startDate`, endDate), the model and variable are affected by this change event. Everything else stays the same.
     updateFences('1', model); // The "1" refers to "Model 1". Thus Model 1's fences will be updated.
     GET['model'] = model;
-    GET['variable'] = VAR_DICT[model][0].value; //1st element
+    GET['map_variable'] = VAR_DICT[model][0].value; //1st element
+    GET['plot_variable'] = VAR_DICT[model][0].variable;
     GET['plotTime'] = dateHourPickerToRodsDate($('#plot_date').val(), $('#plot_hour').val());
 
     if ($('#endDate1').val()) {
@@ -51,7 +52,9 @@ function oc_variable() {
     var GET = getUrlVars();
 
     // Only the variable is affected by this change event. Everything else stays the same.
-    GET['variable'] = $('#variable').val();
+    var $selectedOption = $('#variable option:selected');
+    GET['map_variable'] = $selectedOption.data('wms-name');
+    GET['plot_variable'] = $selectedOption.data('variable-name');
 
     href = constructHref(GET);
     history.pushState("", "", href);
