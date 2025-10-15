@@ -190,10 +190,10 @@ def years(request):
 
     # Plot
     if post and post['pointLonLat'] != '-9999':
-        varname = get_wms_vars()[post['model']][post['variable']][1]
-        varunit = get_wms_vars()[post['model']][post['variable']][2]
+        varname = get_wms_vars()[post['model']][post['map_variable']][1]
+        varunit = get_wms_vars()[post['model']][post['map_variable']][2]
         point_lon_lat = post['pointLonLat']
-        datarod_ts, datarods_urls_dict = get_data_rod_years(post, point_lon_lat)
+        datarod_ts = get_data_rod_years(post, point_lon_lat)
         timeseries_plot = TimeSeries(
             height='250px',
             width='100%',
@@ -206,7 +206,6 @@ def years(request):
 
         context = {
             'timeseries_plot': timeseries_plot,
-            'datarods_urls_dict': datarods_urls_dict,
             'plot_type': 'years'
         }
 

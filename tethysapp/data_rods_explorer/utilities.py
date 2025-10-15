@@ -285,37 +285,45 @@ def get_data_rod_plot2(req_get, point_lon_lat):
     return dr_ts
 
 def get_data_rod_years(req_post, point_lon_lat):
-    variable = req_post['variable']
-    model = req_post['model']
-    superstring = get_datarods_tsb()[model]
+    variable = req_post['plot_variable']
+    lon, lat = point_lon_lat.split(',')
     overlap_years = True if 'true' in req_post['overlap_years'] else False
 
     dr_ts = []
-    dr_links = []
     for year in req_post['years'].split(','):
         if '-' in year:
             year_range = year.split('-')
             for yyyy in range(int(year_range[0]), int(year_range[1]) + 1):
-                dr_link = superstring.format(variable, point_lon_lat.replace(',', ',%20'),
-                                             '{0}-01-01T00'.format(yyyy),
-                                             '{0}-12-31T23'.format(yyyy))
-                data = get_data_from_nasa_server(dr_link, overlap_years)
+                start_date = '{0}-01-01T00'.format(yyyy)
+                end_date = '{0}-12-31T23'.format(yyyy)
+                request_params = {
+                    "plot_variable": variable,
+                    "lon": lon,
+                    "lat": lat,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                }
+
+                data = get_data_from_nasa_server(request_params, overlap_years=overlap_years)
                 dr_ts.append({'name': yyyy,
                               'data': data})
-                dr_links.append(dr_link)
         else:
-            dr_link = str(superstring.format(variable, point_lon_lat.replace(',', ',%20'),
-                                             '{0}-01-01T00'.format(year),
-                                             '{0}-12-31T23'.format(year)))
+            start_date = '{0}-01-01T00'.format(year)
+            end_date = '{0}-12-31T23'.format(year)
+            request_params = {
+                "plot_variable": variable,
+                "lon": lon,
+                "lat": lat,
+                "start_date": start_date,
+                "end_date": end_date,
+            }
 
-            data = get_data_from_nasa_server(dr_link, overlap_years)
+            data = get_data_from_nasa_server(request_params, overlap_years=overlap_years)
             dr_ts.append({'name': year,
                           'data': data})
-            dr_links.append(dr_link)
 
-    datarods_urls_dict = generate_datarods_urls_dict(dr_links)
 
-    return dr_ts, datarods_urls_dict
+    return dr_ts
 
 
 def generate_datarods_urls_dict(asc2_urls):
