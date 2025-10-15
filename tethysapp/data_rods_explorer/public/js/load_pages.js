@@ -98,12 +98,12 @@ function loadNavOptionsAndParams(navItem) {
             if (GET['model2']) {
                 model2 = GET['model2'];
             } else {
-                model2 = 'NLDASF'; //1st element
+                model2 = 'NLDAS2F'; //1st element
             }
 
             data['model2'] = model2;
 
-            if (model === model2 && varia == VAR_DICT[model][0].value) {
+            if (model === model2 && map_var == VAR_DICT[model][0].value) {
                 varia2 = VAR_DICT[model2][1].value;
             } else {
                 varia2 = VAR_DICT[model2][0].value;
@@ -225,7 +225,7 @@ function loadDefaultsForPlot2Nav(data) {
     if (GET['model2']) {
         model2 = GET['model2'];
     } else {
-        model2 = 'NLDASF'; //1st element
+        model2 = 'NLDAS2F'; //1st element
     }
 
     if (GET['endDate']) {
