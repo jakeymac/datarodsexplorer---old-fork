@@ -10,7 +10,7 @@ Key links:
  - View the [DRE User Guide](https://github.com/gespinoza/datarodsexplorer/blob/master/docs/DREUserGuide.md)   (Update the `About` link in `app_base_dre.html` when this changes)
  - View the current [model_config.txt](https://github.com/CUAHSI-APPS/datarodsexplorer/blob/master/tethysapp/data_rods_explorer/public/data/model_config.txt) and [dates_and_spatial_range.txt](https://apps.hydroshare.org/static/data_rods_explorer/data/dates_and_spatial_range.txt) files
  - View the Tethys Platform [home](http://www.tethysplatform.org/),  [documentation](http://docs.tethysplatform.org/en/latest/), and [tutorials](http://docs.tethysplatform.org/en/latest/tutorials.html)
-- View [Deployment Tips](deployment_tips.md)
+- View [Tips for Deploying](deployment_tips.md)
 
 
 This development was funded under the NASA ROSES program award NNH13ZDA001N-ACCESS. 

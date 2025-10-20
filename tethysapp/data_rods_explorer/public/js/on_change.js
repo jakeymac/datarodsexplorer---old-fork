@@ -1,16 +1,70 @@
+const mapDisabledMessage = ' doesa not support the "Display Map" function, ' +
+    'but data rods data can still be obtained under the "Plot one variable", "Compare two variables", ' +
+    'or "Year-on-year changes" options.';
+
+const plotDisabledMessage = ' does not support the "Plot one variable", "Compare two variables", ' +
+    'or "Year-on-year changes" functions, but data rods data can still be obtained under the "Display Map" option.';
+
+const modelFlashMessages = {
+    'NLDAS': {
+        'id': 'NLDAS-get-map-disabled',
+        'text': 'NLDAS ' + mapDisabledMessage,
+        'disable': '#btnDisplayMap'
+    },
+    'AMSRED' : {
+        'id': 'AMSRED-get-plot-disabled',
+        'text': 'LPRM-AMSRE-D ' + plotDisabledMessage,
+        'disable': '.btn-plot'
+    },
+    'AMSREA': {
+        'id': 'AMSREA-get-plot-disabled',
+        'text': 'LPRM-AMSRE-A ' + plotDisabledMessage,
+        'disable': '.btn-plot'
+    },
+    'AMSR2D10' : {
+        'id': 'AMSR2D10-get-plot-disabled',
+        'text': 'LPRM-AMSR2-D 10km' + plotDisabledMessage,
+        'disable': '.btn-plot'
+    },
+    'AMSR2A10' : {
+        'id': 'AMSR2A10-get-plot-disabled',
+        'text': 'LPRM-AMSR2-A 10km' + plotDisabledMessage,
+        'disable': '.btn-plot'
+    },
+    'AMSR2D25' : {
+        'id': 'AMSR2D25-get-plot-disabled',
+        'text': 'LPRM-AMSR2-D 25km' + plotDisabledMessage,
+        'disable': '.btn-plot'
+    },
+    'AMSR2A25' : {
+        'id': 'AMSR2A25-get-plot-disabled',
+        'text': 'LPRM-AMSR2-A 25km' + plotDisabledMessage,
+        'disable': '.btn-plot'
+    },
+    'TMIDY' : {
+        'id': 'TMIDY-get-plot-disabled',
+        'text': 'LPRM-TMI-Day' + plotDisabledMessage,
+        'disable': '.btn-plot'
+    },
+    'TMINT' : {
+        'id': 'TMINT-get-plot-disabled',
+        'text': 'LPRM-TMI-Night' + plotDisabledMessage,
+        'disable': '.btn-plot'
+    }, 
+    'TRMM' : {
+        'id': 'TRMM-get-plot-disabled',
+        'text': 'TRMM' + plotDisabledMessage,
+        'disable': '.btn-plot'
+    }
+}
+
+const disableButtons = Object.values(modelFlashMessages).map(msg => msg.disable);
+const messageIds = Object.values(modelFlashMessages).map(msg => msg.id);
+
 function oc_model() {
-    var NLDASFlashMessageID = 'NLDAS-get-map-disabled';
-    var NLDASFlashMessageText = 'NLDAS does not support the "Display Map" function, ' +
-        'but data rods data can still be obtained under the "Plot one variable", "Compare two variables", ' +
-        'or "Year-on-year changes" options.';
-    var SMERGEFlashMessageID = 'Smerge-get-map-disabled';
-    var SMERGEFlashMessageText = 'Smerge does not support the "Display Map" function, ' +
-        'but data rods data can still be obtained under the "Plot one variable", "Compare two variables", ' +
-        'or "Year-on-year changes" options.';
     var href;
     var GET = getUrlVars();
     var model = $('#model1').val();
-    var btnDisplayMap = $('#btnDisplayMap');
 
     // All datepickers (plotTime, startDate`, endDate), the model and variable are affected by this change event. Everything else stays the same.
     updateFences('1', model); // The "1" refers to "Model 1". Thus Model 1's fences will be updated.
@@ -32,19 +86,21 @@ function oc_model() {
     loadVariableOptions('model', 'variable');
     validateClickPoint();
 
-    if (model.includes('NLDAS')) {
-        btnDisplayMap.prop('disabled', true);
-        removeFlashMessage(SMERGEFlashMessageID);
-        displayFlashMessage(NLDASFlashMessageID, 'info', NLDASFlashMessageText)
-    } else if (model.includes('SMERGE')) {
-        btnDisplayMap.prop('disabled', true);
-        removeFlashMessage(NLDASFlashMessageID);
-        displayFlashMessage(SMERGEFlashMessageID, 'info', SMERGEFlashMessageText)
-    } else {
-        btnDisplayMap.prop('disabled', false);
-        removeFlashMessage(NLDASFlashMessageID);
-        removeFlashMessage(SMERGEFlashMessageID);
-    }
+    disableButtons.forEach(function (buttonSelector) {
+        $(buttonSelector).prop('disabled', false);
+    });
+
+    messageIds.forEach(function (msgId) {
+        removeFlashMessage(msgId);
+    });
+
+    Object.keys(modelFlashMessages).forEach(function (modelKey) {
+        if (model.includes(modelKey)) {
+            var flashMessage = modelFlashMessages[modelKey];
+            $(flashMessage.disable).prop('disabled', true);
+            displayFlashMessage(flashMessage.id, 'info', flashMessage.text);
+        }
+    });
 }
 
 function oc_variable() {
