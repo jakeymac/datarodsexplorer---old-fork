@@ -19,7 +19,6 @@ def generate_netrc_file(username, password):
     os.chmod(netrc_path, stat.S_IRUSR | stat.S_IWUSR)
 
 try:
-
     username = App.get_custom_setting("earth_data_username")
     password = App.get_custom_setting("earth_data_password")
 
