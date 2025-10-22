@@ -90,6 +90,11 @@ function getUrlVars() {
     return paramStringToObj(paramString);
 }
 
+function normalizeDate(dateStr) {
+  // If it matches T followed by two digits (e.g. T00, T12, T23)
+  return dateStr.replace(/T(\d{2})$/, 'T$1:00:00');
+}
+
 function dateHourPickerToRodsDate(date, hour) {
     hour = (hour === undefined) ? "" : "T" + hour;
     var dd = date.split('/');
@@ -254,6 +259,8 @@ function requestMap(data, layerName, layerExtents, instanceId=undefined) {
         }
     });
 }
+
+
 
 function createPlot(plotType) {
     var noQueryPointFlashMessageID = 'no-query-point';
@@ -900,10 +907,10 @@ function displayNasaPlotRequestOutput(plotType, data) {
     if (plotType.indexOf('plot') !== -1) {
         if (plotType == 'plot') {
             model = data['model'];
-            variable = data['variable'];
+            variable = data['plot_variable'];
         } else if (plotType == 'plot2') {
             model = data['model2'];
-            variable = data['variable2'];
+            variable = data['plot_variable2'];
         }
 
         startDate = data['startDate'];
@@ -924,8 +931,8 @@ function displayNasaPlotRequestOutput(plotType, data) {
     nasaRequest = DATARODS_TSB[model];
     nasaRequest = nasaRequest.replace('{0}', variable);
     nasaRequest = nasaRequest.replace('{1}', pointLonLat);
-    nasaRequest = nasaRequest.replace('{2}', startDate);
-    nasaRequest = nasaRequest.replace('{3}', endDate);
+    nasaRequest = nasaRequest.replace('{2}', normalizeDate(startDate));
+    nasaRequest = nasaRequest.replace('{3}', normalizeDate(endDate));
 
     $('#nasaRequestOutput').html('<b>NASA Data Request:</b><br>' + nasaRequest);
 }
