@@ -139,8 +139,8 @@ function load_map() {
     var data = $('#parametersForm').serialize();
 
     showMapLoading();
-    removeFlashMessage(mapDisplayErrorFlashMessageID);
-    removeFlashMessage(ajaxErrorFlashMessageID);
+    removeFlashMessageById(mapDisplayErrorFlashMessageID);
+    removeFlashMessageById(ajaxErrorFlashMessageID);
 
     data += '&plotTime=' + urlVars['plotTime'];
     data += '&variable=' + urlVars['map_variable'];
@@ -255,7 +255,7 @@ function requestMap(data, layerName, layerExtents, instanceId=undefined) {
             hideMapLoading();
             retryCount = 0;
             displayFlashMessage(ajaxErrorFlashMessageID, 'warning', ajaxErrorFlashMessageText);
-            removeFlashMessage(mapDisplayErrorFlashMessageID);
+            removeFlashMessageById(mapDisplayErrorFlashMessageID);
         }
     });
 }
@@ -274,10 +274,10 @@ function createPlot(plotType) {
     var error999FlashMessageID = 'error-999';
     // error999FlashMessageText is generated dynamically in python and passed in below
 
-    removeFlashMessage(unexpectedErrorFlashMessageID);
-    removeFlashMessage(noQueryPointFlashMessageID);
-    removeFlashMessage(pointOutBoundsFlashMessageID);
-    removeFlashMessage(error999FlashMessageID);
+    removeFlashMessageById(unexpectedErrorFlashMessageID);
+    removeFlashMessageById(noQueryPointFlashMessageID);
+    removeFlashMessageById(pointOutBoundsFlashMessageID);
+    removeFlashMessageById(error999FlashMessageID);
 
     load_map_post_parameters();
     var data = {};
@@ -314,7 +314,6 @@ function createPlot(plotType) {
                 }
             },
             success: function (responseHTML) {
-                
                 if (responseHTML.indexOf('Error999') !== -1) {
                     $('#plot-loading').addClass('d-none');
                     displayFlashMessage(error999FlashMessageID, 'warning', $(responseHTML).text());
@@ -366,7 +365,7 @@ function hideMapLoading() {
     $('#map-loading').addClass('d-none');
 }
 
-function getProxyDownload(output_type) {
+function getRawData(output_type) {
     const params = getUrlVars();
     const searchParams = new URLSearchParams();
     Object.keys(params).forEach(key => {
@@ -584,7 +583,7 @@ function openDataRodsUrls(datarods_urls) {
     });
 }
 
-function displayFlashMessage(id, type, message, allowClose) {
+function displayFlashMessage(id, type, message, allowClose, className='') {
     var closeHtml = '';
     var sign;
 
@@ -611,7 +610,7 @@ function displayFlashMessage(id, type, message, allowClose) {
     }
 
     $('#top-info-container').append(
-        '<div id="' + id + '" class="alert alert-' + type + ' alert-dismissible" role="alert">' +
+        '<div id="' + id + '" class="alert alert-' + type + ' alert-dismissible ' + className + '" role="alert">' +
         closeHtml +
         '<b><span class="bi bi-' + sign + '-circle" aria-hidden="true"></span> ' +
         message +
@@ -620,8 +619,12 @@ function displayFlashMessage(id, type, message, allowClose) {
     $('#app-content-wrapper').scrollTop(0);
 }
 
-function removeFlashMessage(id) {
+function removeFlashMessageById(id) {
     $('#top-info-container').find('#' + id).remove();
+}
+
+function removeFlashMessageByClass(className) {
+    $('#top-info-container').find('.' + className).remove();
 }
 
 function pointIsOutOfBounds(pointLonLat, model1, model2) {
@@ -736,7 +739,7 @@ function updateTemporalFences(modelNum) {
     var model2BoundsModified = false;
     var $endDate, $startDate, $plotDate;
 
-    removeFlashMessage(boundsAdjustedFlashMessageID);
+    removeFlashMessageById(boundsAdjustedFlashMessageID);
 
     if (modelNum === '1') {
         $plotDate = $('#plot_date');
@@ -886,7 +889,7 @@ function validateClickPoint() {
             displayFlashMessage(outOfBoundsFlashMessageID, 'warning', outOfBoundsFlashMessageText);
             $('.btn-plot').addClass('disabled');
         } else {
-            removeFlashMessage(outOfBoundsFlashMessageID);
+            removeFlashMessageById(outOfBoundsFlashMessageID);
             enablePlotButtons();
         }
     }
@@ -1087,7 +1090,7 @@ function validateDateFormat($dateObj) {
     var numDateSegments;
     var i;
 
-    removeFlashMessage(invalidDateFlashMessageId);
+    removeFlashMessageById(invalidDateFlashMessageId);
 
     if (originalDate === '' || originalDate === undefined) {
         displayFlashMessage(invalidDateFlashMessageId, 'danger', invalidDateFlashMessageText, false);

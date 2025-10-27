@@ -4,7 +4,7 @@ function onClickLink(link, navItem) {
         $('#nav-' + navItem).addClass('d-none');
 
         if (navItem == 'plot2') {
-            removeFlashMessage('bound-adjusted');
+            removeFlashMessageById('bound-adjusted');
             TETHYS_MAP_VIEW.getMap().removeLayer(MODEL2_LAYER);
             update_legend();
             COMPARE_TWO = false;
@@ -21,9 +21,11 @@ function onClickLink(link, navItem) {
             TETHYS_MAP_VIEW.getMap().addLayer(MODEL2_LAYER);
             update_legend();
             COMPARE_TWO = true;
+            oc_model2();
         } else {
-            removeFlashMessage('bound-adjusted');
+            removeFlashMessageById('bound-adjusted');
             TETHYS_MAP_VIEW.getMap().removeLayer(MODEL2_LAYER);
+            removeFlashMessageByClass('model2-flash-message');
             update_legend();
             COMPARE_TWO = false;
         }

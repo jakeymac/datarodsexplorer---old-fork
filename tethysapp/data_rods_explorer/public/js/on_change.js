@@ -90,15 +90,13 @@ function oc_model() {
         $(buttonSelector).prop('disabled', false);
     });
 
-    messageIds.forEach(function (msgId) {
-        removeFlashMessage(msgId);
-    });
+    removeFlashMessageByClass("model1-flash-message");
 
     Object.keys(modelFlashMessages).forEach(function (modelKey) {
         if (model.includes(modelKey)) {
             var flashMessage = modelFlashMessages[modelKey];
             $(flashMessage.disable).prop('disabled', true);
-            displayFlashMessage(flashMessage.id, 'info', flashMessage.text);
+            displayFlashMessage(flashMessage.id + '-1', 'info', flashMessage.text, false, "model1-flash-message");
         }
     });
 }
@@ -177,6 +175,23 @@ function oc_model2() {
     history.pushState("", "", href);
     loadVariableOptions('model2', 'variable2');
     validateClickPoint();
+
+    disableButtons.forEach(function (buttonSelector) {
+        $(buttonSelector).prop('disabled', false);
+    });
+
+    removeFlashMessageByClass("model2-flash-message");
+
+    Object.keys(modelFlashMessages).forEach(function (modelKey) {
+        if (model2.includes(modelKey)) {
+            // We're only looking for plot-disabled messages for model2
+            if (!modelFlashMessages[modelKey].id.includes('map')) {
+                var flashMessage = modelFlashMessages[modelKey];
+                $(flashMessage.disable).prop('disabled', true);
+                displayFlashMessage(flashMessage.id + '-2', 'info', flashMessage.text, false, "model2-flash-message");
+            }
+        }
+    })
 }
 
 function oc_variable2() {
