@@ -95,7 +95,7 @@ function oc_model() {
     Object.keys(modelFlashMessages).forEach(function (modelKey) {
         if (model.includes(modelKey)) {
             var flashMessage = modelFlashMessages[modelKey];
-            $(flashMessage.disable).prop('disabled', true);
+            $(flashMessage.disable).addClass('disabled');
             displayFlashMessage(flashMessage.id + '-1', 'info', flashMessage.text, false, "model1-flash-message");
         }
     });
@@ -187,7 +187,7 @@ function oc_model2() {
             // We're only looking for plot-disabled messages for model2
             if (!modelFlashMessages[modelKey].id.includes('map')) {
                 var flashMessage = modelFlashMessages[modelKey];
-                $(flashMessage.disable).prop('disabled', true);
+                $(flashMessage.disable).addClass('disabled')
                 displayFlashMessage(flashMessage.id + '-2', 'info', flashMessage.text, false, "model2-flash-message");
             }
         }
