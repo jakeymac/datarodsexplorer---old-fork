@@ -438,8 +438,39 @@ function getRawData(output_type) {
             searchParams.append(key, params[key]);
         }
     });
-    const url = `/apps/data-rods-explorer/proxy-download/${output_type}/?${searchParams.toString()}`;
-    window.open(url);
+    const url = `/apps/data-rods-explorer/raw-data/${output_type}/?${searchParams.toString()}`;
+    if (output_type == 'browser') {
+        window.open(url);
+        return;
+    } else {
+        showPlotLoading();
+        fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Download failed');
+            }
+            return Promise.all([response.blob(), response.headers]);
+        })
+        .then(([blob, headers]) => {
+            const disposition = headers.get('Content-Disposition');
+            let filename = disposition.split('filename=')[1].replace(/"/g, '');
+            const downloadUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(downloadUrl);
+        })
+        .catch(err => {
+        console.error(err);
+        alert('Error downloading file.');
+        })
+        .finally(() => {
+            hidePlotLoading();
+        });
+    }
 }
 
 function addLegendItem(layer) {

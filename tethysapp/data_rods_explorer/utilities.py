@@ -165,9 +165,7 @@ def create_years_list(first_year=1979):
 def normalize_time_string(time_string):
     return datetime.strptime(time_string, "%Y-%m-%dT%H").strftime("%Y-%m-%dT%H:%M:%S")
 
-
-
-def get_data_from_nasa_server(request_params, overlap_years=False, file_output_type = None):
+def get_data_from_nasa_server(request_params, overlap_years=False, full_output=False):
     time_series_url = "https://api.giovanni.earthdata.nasa.gov/timeseries"
 
     lon = request_params['lon']
@@ -184,14 +182,15 @@ def get_data_from_nasa_server(request_params, overlap_years=False, file_output_t
             "time": f"{time_start}/{time_end}",
         }
 
-    if file_output_type:
-        query_parameters['type'] = file_output_type
+    if full_output:
         response = requests.get(time_series_url, params=query_parameters, headers=headers, stream=True)
-        content_type = response.headers.get('Content-Type', 'application/octet-stream')
-        django_response = HttpResponse(response.raw, content_type=content_type)
-        django_response['Content-Disposition'] = f'attachment; filename="data.{file_output_type}"'
 
-        return django_response
+        if response.status_code != 200:
+            raise Exception(
+                f"ERROR {response.status_code}: NASA GiC service returned an error for {lat},{lon} parameter '{data}'."
+            )
+        return {"content": response.content, "content_type": response.headers.get('Content-Type', 'application/octet-stream')}
+
     else:
         response = requests.get(time_series_url, params=query_parameters, headers=headers)
 
@@ -287,8 +286,11 @@ def get_data_rod_plot2(req_get, point_lon_lat):
 def get_data_rod_years(req_post, point_lon_lat):
     variable = req_post['plot_variable']
     lon, lat = point_lon_lat.split(',')
-    overlap_years = True if 'true' in req_post['overlap_years'] else False
-
+    if 'overlap_years' in req_post:
+        overlap_years = True if 'true' in req_post['overlap_years'] else False
+    else:
+        overlap_years = False
+        
     dr_ts = []
     for year in req_post['years'].split(','):
         if '-' in year:
@@ -322,7 +324,6 @@ def get_data_rod_years(req_post, point_lon_lat):
             dr_ts.append({'name': year,
                           'data': data})
 
-
     return dr_ts
 
 
@@ -349,3 +350,27 @@ def get_earthdata_token():
                          netrc.netrc().hosts["urs.earthdata.nasa.gov"][2]),
                          allow_redirects=True).text.replace('"','')
     return token
+
+def format_csv_data(raw_data):
+    if isinstance(raw_data, bytes):
+        raw_data = raw_data.decode('utf-8')
+        
+    lines = raw_data.strip().splitlines()
+    meta_lines = []
+    data_lines = []
+
+    # Separate metadata from data
+    for i, line in enumerate(lines):
+        if line.startswith("Timestamp"):
+            meta_lines = lines[:i]
+            data_lines = lines[i:]
+            break
+
+    # Pretty print metadata
+    formatted_meta = "\n".join(f"{k.strip():<20} {v.strip()}" for k, v in 
+                               (m.split(",", 1) for m in meta_lines if "," in m))
+
+    # Add spacing and simple column headers
+    formatted_data = "\n".join(data_lines)
+
+    return f"{formatted_meta}\n\n{formatted_data}"
