@@ -357,7 +357,7 @@ function createPlot(plotType) {
     } else if (pointIsOutOfBounds(pointLonLat, data['model'], data['model2'])) {
         displayFlashMessage(pointOutBoundsFlashMessageID, 'warning', pointOutBoundsFlashMessageText);
     } else {
-        $('#plot-loading').removeClass('d-none');
+        showPlotLoading();
         $("#plot-container").empty();
         displayNasaPlotRequestOutput(plotType, data);
         $.ajax({
@@ -372,14 +372,14 @@ function createPlot(plotType) {
             },
             success: function (responseHTML) {
                 if (responseHTML.indexOf('Error999') !== -1) {
-                    $('#plot-loading').addClass('d-none');
+                    hidePlotLoading();
                     displayFlashMessage(error999FlashMessageID, 'warning', $(responseHTML).text());
                 } else {
                     $('#plot-container').html(responseHTML);
                     $('.dropdown-toggle').dropdown();
                     var hcPlotType = $('.highcharts-plot').attr('data-type');
                     initHighChartsPlot($('.highcharts-plot'), hcPlotType);
-                    $('#plot-loading').addClass('d-none');
+                    hidePlotLoading();
 
                     /*$('.option-uploadToHS').on('click', function () {
                         prepareAndOpenHSUploadModal(this);
@@ -402,7 +402,7 @@ function createPlot(plotType) {
                     });
                 }
             }, error: function () {
-                $('#plot-loading').addClass('d-none');
+                hidePlotLoading();
                 displayFlashMessage(unexpectedErrorFlashMessageID, 'danger', unexpectedErrorFlashMessageText);
             }
         });
@@ -420,6 +420,14 @@ function showMapLoading() {
 
 function hideMapLoading() {
     $('#map-loading').addClass('d-none');
+}
+
+function showPlotLoading() {
+    $("#plot-loading").removeClass('d-none');
+}
+
+function hidePlotLoading() {
+    $("#plot-loading").addClass('d-none');
 }
 
 function getRawData(output_type) {
