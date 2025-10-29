@@ -1,66 +1,3 @@
-const mapDisabledMessage = ' doesa not support the "Display Map" function, ' +
-    'but data rods data can still be obtained under the "Plot one variable", "Compare two variables", ' +
-    'or "Year-on-year changes" options.';
-
-const plotDisabledMessage = ' does not support the "Plot one variable", "Compare two variables", ' +
-    'or "Year-on-year changes" functions, but data rods data can still be obtained under the "Display Map" option.';
-
-const modelFlashMessages = {
-    'NLDAS': {
-        'id': 'NLDAS-get-map-disabled',
-        'text': 'NLDAS ' + mapDisabledMessage,
-        'disable': '#btnDisplayMap'
-    },
-    'AMSRED' : {
-        'id': 'AMSRED-get-plot-disabled',
-        'text': 'LPRM-AMSRE-D ' + plotDisabledMessage,
-        'disable': '.btn-plot'
-    },
-    'AMSREA': {
-        'id': 'AMSREA-get-plot-disabled',
-        'text': 'LPRM-AMSRE-A ' + plotDisabledMessage,
-        'disable': '.btn-plot'
-    },
-    'AMSR2D10' : {
-        'id': 'AMSR2D10-get-plot-disabled',
-        'text': 'LPRM-AMSR2-D 10km' + plotDisabledMessage,
-        'disable': '.btn-plot'
-    },
-    'AMSR2A10' : {
-        'id': 'AMSR2A10-get-plot-disabled',
-        'text': 'LPRM-AMSR2-A 10km' + plotDisabledMessage,
-        'disable': '.btn-plot'
-    },
-    'AMSR2D25' : {
-        'id': 'AMSR2D25-get-plot-disabled',
-        'text': 'LPRM-AMSR2-D 25km' + plotDisabledMessage,
-        'disable': '.btn-plot'
-    },
-    'AMSR2A25' : {
-        'id': 'AMSR2A25-get-plot-disabled',
-        'text': 'LPRM-AMSR2-A 25km' + plotDisabledMessage,
-        'disable': '.btn-plot'
-    },
-    'TMIDY' : {
-        'id': 'TMIDY-get-plot-disabled',
-        'text': 'LPRM-TMI-Day' + plotDisabledMessage,
-        'disable': '.btn-plot'
-    },
-    'TMINT' : {
-        'id': 'TMINT-get-plot-disabled',
-        'text': 'LPRM-TMI-Night' + plotDisabledMessage,
-        'disable': '.btn-plot'
-    }, 
-    'TRMM' : {
-        'id': 'TRMM-get-plot-disabled',
-        'text': 'TRMM' + plotDisabledMessage,
-        'disable': '.btn-plot'
-    }
-}
-
-const disableButtons = Object.values(modelFlashMessages).map(msg => msg.disable);
-const messageIds = Object.values(modelFlashMessages).map(msg => msg.id);
-
 function oc_model() {
     var href;
     var GET = getUrlVars();
@@ -84,21 +21,9 @@ function oc_model() {
     href = constructHref(GET);
     history.pushState("", "", href);
     loadVariableOptions('model', 'variable');
-    validateClickPoint();
-
-    disableButtons.forEach(function (buttonSelector) {
-        $(buttonSelector).prop('disabled', false);
-    });
-
-    removeFlashMessageByClass("model1-flash-message");
-
-    Object.keys(modelFlashMessages).forEach(function (modelKey) {
-        if (model.includes(modelKey)) {
-            var flashMessage = modelFlashMessages[modelKey];
-            $(flashMessage.disable).addClass('disabled');
-            displayFlashMessage(flashMessage.id + '-1', 'info', flashMessage.text, false, "model1-flash-message");
-        }
-    });
+    
+    updateMapButtonState();
+    updatePlotButtonsState();
 }
 
 function oc_variable() {
@@ -174,24 +99,8 @@ function oc_model2() {
     href = constructHref(GET);
     history.pushState("", "", href);
     loadVariableOptions('model2', 'variable2');
-    validateClickPoint();
-
-    disableButtons.forEach(function (buttonSelector) {
-        $(buttonSelector).prop('disabled', false);
-    });
-
-    removeFlashMessageByClass("model2-flash-message");
-
-    Object.keys(modelFlashMessages).forEach(function (modelKey) {
-        if (model2.includes(modelKey)) {
-            // We're only looking for plot-disabled messages for model2
-            if (!modelFlashMessages[modelKey].id.includes('map')) {
-                var flashMessage = modelFlashMessages[modelKey];
-                $(flashMessage.disable).addClass('disabled')
-                displayFlashMessage(flashMessage.id + '-2', 'info', flashMessage.text, false, "model2-flash-message");
-            }
-        }
-    })
+    
+    updatePlotButtonsState();
 }
 
 function oc_variable2() {
@@ -213,7 +122,6 @@ function oc_years() {
 
     if (yearsList && yearsList.length > 0) {
         GET['years'] = yearsList.join(',');
-        validateClickPoint();
     } else {
         $('a[name=years]').addClass('disabled');
     }

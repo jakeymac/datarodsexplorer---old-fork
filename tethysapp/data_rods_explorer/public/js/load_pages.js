@@ -25,11 +25,11 @@ function onClickLink(link, navItem) {
         } else {
             removeFlashMessageById('bound-adjusted');
             TETHYS_MAP_VIEW.getMap().removeLayer(MODEL2_LAYER);
-            removeFlashMessageByClass('model2-flash-message');
+            removeFlashMessageByClass('model2-plot-flash-message');
             update_legend();
             COMPARE_TWO = false;
+            oc_model();
         }
-        validateClickPoint()
     }
 }
 
